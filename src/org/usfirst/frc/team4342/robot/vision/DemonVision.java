@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public class DemonVision {
 	private Logger LOG;
 	
+	private static NetworkTable table = NetworkTable.getTable("SmartDashboard");
 	private final VideoCapture video;
-	private static NetworkTable table;
 	
 	private Mat image = new Mat();
 	
@@ -28,8 +28,6 @@ public class DemonVision {
 		
 		video = new VideoCapture();
 		video.open(this.ip);
-		
-		table = NetworkTable.getTable("SmartDashboard");
 	}
 	
 	public boolean connected() {
@@ -46,11 +44,6 @@ public class DemonVision {
 		
 		while(true) {
 			try {
-				if(!connected()) {
-					LOG.log(Level.SEVERE, "Lost connection! -> camera.isOpened()=" + video.isOpened() + ", table.isConnected()=" + table.isConnected());
-					break;
-				}
-				
 				video.read(image);
 				pipeline.process(image);
 				
@@ -63,7 +56,7 @@ public class DemonVision {
 				
 				Thread.sleep(20);
 			} catch(Exception ex) {
-				LOG.log(Level.SEVERE, "", ex);
+				LOG.log(Level.SEVERE, "Exception in DemonVision.start()!", ex);
 				break;
 			}
 		}
