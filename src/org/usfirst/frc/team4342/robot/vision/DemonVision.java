@@ -10,6 +10,12 @@ import org.opencv.videoio.VideoCapture;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class DemonVision {
+	static {
+		NetworkTable.setClientMode();
+		NetworkTable.setNetworkIdentity("coprocessor");
+		NetworkTable.setIPAddress("roborio-4342.local");
+	}
+	
 	private Logger LOG;
 	
 	private static NetworkTable table = NetworkTable.getTable("SmartDashboard");

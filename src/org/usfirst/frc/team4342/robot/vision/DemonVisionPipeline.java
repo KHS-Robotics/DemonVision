@@ -27,7 +27,7 @@ public class DemonVisionPipeline implements VisionPipeline {
 	private MatOfKeyPoint findBlobsOutput = new MatOfKeyPoint();
 	
 	static {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		System.load(Core.NATIVE_LIBRARY_NAME);
 	}
 
 	/**
