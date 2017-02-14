@@ -18,19 +18,32 @@ public class DemonVision {
 	
 	private Logger LOG;
 	
-	private static NetworkTable table = NetworkTable.getTable("SmartDashboard");
+	private static NetworkTable table;
 	private final VideoCapture video;
 	
 	private Mat image = new Mat();
 	
-	private final String ip;
-	private final DemonVisionPipeline pipeline;
+	private int usbPort;
+	private String ip;
+	private DemonVisionPipeline pipeline;
+	
+	public DemonVision(int usbPort, DemonVisionPipeline pipeline) {
+		this.usbPort = usbPort;
+		this.pipeline = pipeline;
+		
+		LOG = Logger.getLogger(DemonVision.class.getName());
+		
+		video = new VideoCapture();
+		video.open(this.usbPort);
+	}
 	
 	public DemonVision(String ip, DemonVisionPipeline pipeline) {
 		this.ip = ip;
 		this.pipeline = pipeline;
 		
 		LOG = Logger.getLogger(DemonVision.class.getName());
+		
+		table = NetworkTable.getTable("SmartDashboard");
 		
 		video = new VideoCapture();
 		video.open(this.ip);
