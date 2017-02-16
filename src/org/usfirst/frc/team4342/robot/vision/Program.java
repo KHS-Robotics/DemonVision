@@ -5,28 +5,33 @@ package org.usfirst.frc.team4342.robot.vision;
  */
 public class Program  {
 	private static final int CONNECTION_TIMEOUT_SECONDS = 60;
-	private static final String DEFAULT_IP = "10.43.42.16";
+	private static final int USB_PORT = 0;
 	
 	/**
 	 * The main entry point
 	 * @param args command-line arguments
 	 */
 	public static void main(String[] args) throws Exception {
-		final String IP = args.length != 0 ? args[0] : DEFAULT_IP;
-		
 		DemonVisionPipeline pipeline = new DemonVisionPipeline();
-		DemonVision vision = new DemonVision(IP, pipeline);
-		
-		System.out.print("Connecting...");
+		DemonVision vision = new DemonVision(USB_PORT, pipeline);
 		
 		int numLoops = 0;
-		while(!vision.connected()) {
+		
+		System.out.print("Connecting to camera...");
+		while(!vision.cameraConnected()) {
 			if(numLoops >= CONNECTION_TIMEOUT_SECONDS)
-				throw new java.net.ConnectException("Failed to connect Pi to camera/SmartDashboard!");
+				throw new java.io.IOException("Failed to connect to camera on USB port " + USB_PORT + "!");
 			
-			System.out.print(".");
 			numLoops++;
+			Thread.sleep(1000);
+		}
+		
+		System.out.println("Connecting to SmartDashboard...");
+		while(!vision.smartDashboardConnected()) {
+			if(numLoops >= CONNECTION_TIMEOUT_SECONDS)
+				throw new java.net.ConnectException("Failed to connect to SmartDashboard!");
 			
+			numLoops++;
 			Thread.sleep(1000);
 		}
 		

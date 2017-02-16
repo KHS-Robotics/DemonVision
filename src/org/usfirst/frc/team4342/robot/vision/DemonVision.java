@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public class DemonVision {
 	static {
 		NetworkTable.setClientMode();
-		NetworkTable.setNetworkIdentity("coprocessor");
+		NetworkTable.setNetworkIdentity("raspberry-pi-3");
 		NetworkTable.setIPAddress("roborio-4342.local");
 	}
 	
@@ -24,7 +24,6 @@ public class DemonVision {
 	private Mat image = new Mat();
 	
 	private int usbPort;
-	private String ip;
 	private DemonVisionPipeline pipeline;
 	
 	public DemonVision(int usbPort, DemonVisionPipeline pipeline) {
@@ -35,22 +34,20 @@ public class DemonVision {
 		
 		video = new VideoCapture();
 		video.open(this.usbPort);
-	}
-	
-	public DemonVision(String ip, DemonVisionPipeline pipeline) {
-		this.ip = ip;
-		this.pipeline = pipeline;
-		
-		LOG = Logger.getLogger(DemonVision.class.getName());
 		
 		table = NetworkTable.getTable("SmartDashboard");
-		
-		video = new VideoCapture();
-		video.open(this.ip);
 	}
 	
 	public boolean connected() {
 		return video.isOpened() && table.isConnected();
+	}
+	
+	public boolean cameraConnected() {
+		return video.isOpened();
+	}
+	
+	public boolean smartDashboardConnected() {
+		return table.isConnected();
 	}
 	
 	public void start() {
