@@ -60,6 +60,8 @@ public class DemonVision {
 		
 		while(true) {
 			try {
+				image = new Mat();
+				
 				video.read(image);
 				pipeline.process(image);
 				
