@@ -21,7 +21,7 @@ public class DemonVision {
 	private static NetworkTable table;
 	private final VideoCapture video;
 	
-	private Mat image = new Mat();
+	private Mat image;
 	
 	private int usbPort;
 	private DemonVisionPipeline pipeline;
