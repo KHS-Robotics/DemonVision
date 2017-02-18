@@ -4,7 +4,7 @@ package org.usfirst.frc.team4342.robot.vision;
  * Main class
  */
 public class Program  {
-	private static final int CONNECTION_TIMEOUT_SECONDS = 60;
+	private static final int CONNECTION_TIMEOUT_SECONDS = 180;
 	private static final int USB_PORT = 0;
 	
 	/**

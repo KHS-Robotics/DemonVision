@@ -13,7 +13,7 @@ public class DemonVision {
 	static {
 		NetworkTable.setClientMode();
 		NetworkTable.setNetworkIdentity("raspberry-pi-3");
-		NetworkTable.setIPAddress("roborio-4342.local");
+		NetworkTable.setIPAddress("roborio-4342-frc.local");
 	}
 	
 	private Logger LOG;
@@ -39,7 +39,7 @@ public class DemonVision {
 	}
 	
 	public boolean connected() {
-		return video.isOpened() && table.isConnected();
+		return cameraConnected() && smartDashboardConnected();
 	}
 	
 	public boolean cameraConnected() {
@@ -70,7 +70,9 @@ public class DemonVision {
 				table.putNumber("DV-Blob-Width", blob.width());
 				table.putNumber("DV-Blob-Height", blob.height());
 				
-				Thread.sleep(20);
+				image = null;
+				
+				Thread.sleep(200);
 			} catch(Exception ex) {
 				LOG.log(Level.SEVERE, "Exception in DemonVision.start()!", ex);
 				break;
