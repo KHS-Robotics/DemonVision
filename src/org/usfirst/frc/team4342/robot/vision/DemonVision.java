@@ -1,10 +1,11 @@
 package org.usfirst.frc.team4342.robot.vision;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.MatOfPoint;
 import org.opencv.videoio.VideoCapture;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -58,6 +59,8 @@ public class DemonVision {
 		
 		LOG.log(Level.INFO, "Starting vision pipeline...");
 		
+		table.putBoolean("DemonVision", true);
+		
 		while(true) {
 			try {
 				image = new Mat();
@@ -65,14 +68,11 @@ public class DemonVision {
 				video.read(image);
 				pipeline.process(image);
 				
-				MatOfKeyPoint blob = pipeline.findBlobsOutput();
+				ArrayList<MatOfPoint> contours = pipeline.filterContoursOutput();
 				
-				// We will do more with the blob but for now
-				// at least it's putting something on the table
-				table.putNumber("DV-Blob-Width", blob.width());
-				table.putNumber("DV-Blob-Height", blob.height());
-				
-				image = null;
+				// TODO: Calculate essential information/ratios with
+				// the filtered contour output and put data up to
+				// the SmartDashboard
 				
 				Thread.sleep(200);
 			} catch(Exception ex) {
@@ -80,5 +80,7 @@ public class DemonVision {
 				break;
 			}
 		}
+		
+		table.putBoolean("DemonVision", false);
 	}
 }
