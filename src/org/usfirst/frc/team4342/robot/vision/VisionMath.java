@@ -5,14 +5,32 @@ public class VisionMath {
 	
 	private static final double CAMERA_VIEW_ANGLE = 68.5;
 	private static final int ACCELERATION_DUE_TO_GRAVITY_INCHES = 384;
+	// TODO: Get wheel shooter radius
 	private static final double SHOOTER_WHEEL_RADIUS_INCHES = 2.0;
-	private static final double ANGLE = 45;
+	// TODO: Measure far and close angle
+	private static final double FAR_ANGLE = 60;
+	private static final double CLOSE_ANGLE = 45;
 	
+	/**
+	 * Calculates an adjusted yaw to orient the robot center with the boiler
+	 * @param yaw the current yaw of the robot
+	 * @param topCenterXRatio the top bounding rectangle's center x ratio
+	 * @return an adjusted yaw that the robot should goto to align center with the boiler
+	 */
 	public static double getAdjustedYaw(double yaw, double topCenterXRatio) {
 		return yaw + CAMERA_VIEW_ANGLE*(topCenterXRatio - 0.5);
 	}
 	
-	public static double getIdealShooterRPM(double topCenterYRatio) {
+	/**
+	 * Calculates an ideal shooter wheel RPM
+	 * @param farAngle true to use the far angle (shooter set to far), 
+	 * false to use close (shooter set to close)
+	 * @param topCenterYRatio the top bounding rectangle's center y ratio
+	 * @return an ideal shooter RPM
+	 */
+	public static double getIdealShooterRPM(boolean farAngle, double topCenterYRatio) {
+		final double ANGLE = farAngle ? FAR_ANGLE : CLOSE_ANGLE;
+		
 		final double NUMERATOR = ACCELERATION_DUE_TO_GRAVITY_INCHES * 67.5;
 		final double DENOMINATOR = Math.tan(Math.toRadians(CAMERA_VIEW_ANGLE)*topCenterYRatio)*Math.sin(2*ANGLE);
 		final double VELOCITY = Math.sqrt(NUMERATOR / DENOMINATOR);
