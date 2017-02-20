@@ -8,8 +8,6 @@ public class Boiler {
 	private static final int RES_X = 360;
 	private static final int RES_Y = 240;
 	
-	private NetworkTable table;
-	
 	private final double topWidthRatio, topHeightRatio, bottomWidthRatio, bottomHeightRatio;
 	private final double topCenterXRatio, topCenterYRatio, bottomCenterXRatio, bottomCenterYRatio;
 	
@@ -27,11 +25,9 @@ public class Boiler {
 		topCenterYRatio = (top.y + (top.height / 2)) / RES_Y;
 		bottomCenterXRatio = (bottom.x + (bottom.height / 2)) / RES_X;
 		bottomCenterYRatio = (bottom.y + (bottom.height / 2)) / RES_Y;
-		
-		table = NetworkTable.getTable("SmartDashboard");
 	}
 	
-	public void publishData() {
+	public void publishData(NetworkTable table) {
 		table.putNumber("Top-Width", topWidthRatio);
 		table.putNumber("Top-Height", topHeightRatio);
 		table.putNumber("Bottom-Width", bottomWidthRatio);

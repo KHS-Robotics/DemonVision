@@ -119,14 +119,17 @@ public class DemonVision {
 					Rect bottom = Imgproc.boundingRect(contours.get(1));
 
 					Boiler b = new Boiler(top, bottom);
-					b.publishData();
+					b.publishData(table);
 					
 					final double ADJUSTED_YAW = VisionMath.getAdjustedYaw(robotYaw, b.getTopCenterXRatio());
 					final double SHOOTER_RPM = VisionMath.getIdealShooterRPM(farAngle, b.getTopCenterYRatio());
 					
-					table.putNumber("Target-Yaw", ADJUSTED_YAW);
+					table.putNumber("NavX-Target-Yaw", ADJUSTED_YAW);
 					table.putNumber("Shooter-Target-RPM", SHOOTER_RPM);
 				}
+				
+				image.release();
+				pipeline.releaseOutputs();
 				
 				Thread.sleep(200); // temporary
 			} catch(Exception ex) {

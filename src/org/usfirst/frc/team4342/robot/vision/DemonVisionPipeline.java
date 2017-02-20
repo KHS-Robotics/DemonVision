@@ -106,7 +106,22 @@ public class DemonVisionPipeline implements VisionPipeline {
 	public ArrayList<MatOfPoint> filterContoursOutput() {
 		return filterContoursOutput;
 	}
-
+	
+	/**
+	 * Frees all calculated outputs by this class
+	 */
+	public void releaseOutputs() {
+		resizeImageOutput.release();
+		hsvThresholdOutput.release();
+		
+		for(MatOfPoint p : findContoursOutput) {
+			p.release();
+		}
+		
+		for(MatOfPoint p : filterContoursOutput) {
+			p.release();
+		}
+	}
 
 	/**
 	 * Scales and image to an exact size.
