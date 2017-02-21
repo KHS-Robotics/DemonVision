@@ -5,8 +5,8 @@ import org.opencv.core.Rect;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class Boiler {
-	private static final int RES_X = 360;
-	private static final int RES_Y = 240;
+	private static final double RES_X = 360.0;
+	private static final double RES_Y = 240.0;
 	
 	private final double topWidthRatio, topHeightRatio, bottomWidthRatio, bottomHeightRatio;
 	private final double topCenterXRatio, topCenterYRatio, bottomCenterXRatio, bottomCenterYRatio;
@@ -17,14 +17,14 @@ public class Boiler {
 		this.top = top;
 		this.bottom = bottom;
 		
-		topWidthRatio = top.width / RES_X;
-		topHeightRatio = top.height / RES_Y;
-		bottomWidthRatio = bottom.width / RES_X;
-		bottomHeightRatio = bottom.height / RES_Y;
-		topCenterXRatio = (top.x + (top.width / 2)) / RES_X;
-		topCenterYRatio = (top.y + (top.height / 2)) / RES_Y;
-		bottomCenterXRatio = (bottom.x + (bottom.height / 2)) / RES_X;
-		bottomCenterYRatio = (bottom.y + (bottom.height / 2)) / RES_Y;
+		topWidthRatio = (double) top.width / RES_X;
+		topHeightRatio = (double) top.height / RES_Y;
+		bottomWidthRatio = (double) bottom.width / RES_X;
+		bottomHeightRatio = (double) bottom.height / RES_Y;
+		topCenterXRatio = (double) (top.x + ((double) top.width / 2.0)) / RES_X;
+		topCenterYRatio = (double) (top.y + ((double) top.height / 2.0)) / RES_Y;
+		bottomCenterXRatio = (double) (bottom.x + ((double) bottom.height / 2.0)) / RES_X;
+		bottomCenterYRatio = (double) (bottom.y + ((double) bottom.height / 2.0)) / RES_Y;
 	}
 	
 	public void publishData(NetworkTable table) {
