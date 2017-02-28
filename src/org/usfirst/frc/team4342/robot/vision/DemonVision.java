@@ -1,8 +1,6 @@
 package org.usfirst.frc.team4342.robot.vision;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -19,7 +17,8 @@ public class DemonVision {
 		NetworkTable.setIPAddress("roborio-4342-frc.local");
 	}
 	
-	private Logger LOG;
+	private static final int CONNECTION_TIMEOUT_SECONDS = 120;
+	private int numLoops;
 	
 	private static NetworkTable table;
 	private final VideoCapture video;
@@ -38,8 +37,6 @@ public class DemonVision {
 	public DemonVision(int usbPort, DemonVisionPipeline pipeline) {
 		this.usbPort = usbPort;
 		this.pipeline = pipeline;
-		
-		LOG = Logger.getLogger(DemonVision.class.getName());
 		
 		video = new VideoCapture();
 		video.open(this.usbPort);
@@ -86,17 +83,31 @@ public class DemonVision {
 	 * 	  <li>Publish calculated ratios to the Smart Dashboard</li>
 	 * 	  <li>Calculate the desired robot yaw and shooter RPM based on top center X and Y ratios</li>
 	 * 	  <li>Publish the desired yaw and shooter RPM to the Smart Dashboard</li>
-	 * 	 <ol>
+	 * 	 </ol>
 	 * 	</ol>
 	 * </p>
+	 * @throws Exception if any error occurrs while starting/running
 	 */
-	public void start() {
-		if(!connected()) {
-			LOG.log(Level.WARNING, "Cannot start DemonVision because we're not connected yet!");
-			return;
+	public void start() throws Exception {
+		System.out.print("Connecting to camera...");
+		while(!cameraConnected()) {
+			if(numLoops >= CONNECTION_TIMEOUT_SECONDS)
+				throw new java.io.IOException("Failed to connect to camera on USB port " + usbPort + "!");
+			
+			numLoops++;
+			Thread.sleep(1000);
 		}
 		
-		LOG.log(Level.INFO, "Starting vision pipeline...");
+		System.out.println("Connecting to SmartDashboard...");
+		while(!smartDashboardConnected()) {
+			if(numLoops >= CONNECTION_TIMEOUT_SECONDS)
+				throw new java.net.ConnectException("Failed to connect to SmartDashboard!");
+			
+			numLoops++;
+			Thread.sleep(1000);
+		}
+		
+		System.out.println("Starting vision pipeline...");
 		
 		table.putBoolean("DemonVision", true);
 		
@@ -133,11 +144,9 @@ public class DemonVision {
 				
 				Thread.sleep(200); // temporary
 			} catch(Exception ex) {
-				LOG.log(Level.SEVERE, "Exception in DemonVision.start()!", ex);
-				break;
+				System.err.println("DemonVision has crashed!");
+				throw ex;
 			}
 		}
-		
-		table.putBoolean("DemonVision", false);
 	}
 }

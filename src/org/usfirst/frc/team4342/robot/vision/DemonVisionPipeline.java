@@ -25,19 +25,30 @@ import edu.wpi.first.wpilibj.vision.VisionPipeline;
 */
 public class DemonVisionPipeline implements VisionPipeline {
 
-	//Outputs
+	// Outputs
 	private Mat resizeImageOutput = new Mat();
 	private Mat blurOutput = new Mat();
 	private Mat hslThresholdOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
+	// Load OpenCV 3.1
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
+	 * 
+	 * <p>
+	 * 	<ol>
+	 * 		<li>Resize the image to 360x240</li>
+	 * 		<li>Blur the image to reduce noise (specifically, Gaussian Blur)</li>
+	 * 		<li>Use HSL Threshold to only keep blue objects</li>
+	 * 		<li>Find the contours</li>
+	 * 		<li>Filter the contours</li>
+	 * 	</ol>
+	 * </p>
 	 */
 	@Override	
 	public void process(Mat source0) {
@@ -79,10 +90,26 @@ public class DemonVisionPipeline implements VisionPipeline {
 		double filterContoursMinVertices = 0.0;
 		double filterContoursMinRatio = 0.0;
 		double filterContoursMaxRatio = 1000.0;
-		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
-
+		filterContours(
+			filterContoursContours, 
+			filterContoursMinArea, 
+			filterContoursMinPerimeter, 
+			filterContoursMinWidth, 
+			filterContoursMaxWidth, 
+			filterContoursMinHeight, 
+			filterContoursMaxHeight, 
+			filterContoursSolidity, 
+			filterContoursMaxVertices, 
+			filterContoursMinVertices, 
+			filterContoursMinRatio, 
+			filterContoursMaxRatio, 
+			filterContoursOutput
+		);
 	}
 	
+	/**
+	 * Releases the resources for the processed outputs
+	 */
 	public void releaseOutputs() {
 		resizeImageOutput.release();
 		blurOutput.release();
@@ -302,9 +329,4 @@ public class DemonVisionPipeline implements VisionPipeline {
 			output.add(contour);
 		}
 	}
-
-
-
-
 }
-
