@@ -1,10 +1,14 @@
 package org.usfirst.frc.team4342.robot.vision;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -17,12 +21,16 @@ public class DemonVision {
 		NetworkTable.setIPAddress("roborio-4342-frc.local");
 	}
 	
+	private Logger LOG;
+	
 	private static final int CONNECTION_TIMEOUT_SECONDS = 120;
+	private static final long TIMEOUT = 30 * 1000;
 	private int numLoops;
 	
 	private static NetworkTable table;
 	private final VideoCapture video;
 	
+	private long startTime;
 	private Mat image;
 	
 	private int usbPort;
@@ -42,6 +50,13 @@ public class DemonVision {
 		video.open(this.usbPort);
 		
 		table = NetworkTable.getTable("SmartDashboard");
+		
+		try {
+			LOG = Logger.getLogger(DemonVision.class.getName());
+			LOG.addHandler(new java.util.logging.FileHandler("demon_vision.log"));
+		} catch (SecurityException | IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	/**
@@ -89,27 +104,35 @@ public class DemonVision {
 	 * @throws Exception if any error occurrs while starting/running
 	 */
 	public void start() throws Exception {
-		System.out.print("Connecting to camera...");
+		LOG.info("Connecting to camera...");
 		while(!cameraConnected()) {
-			if(numLoops >= CONNECTION_TIMEOUT_SECONDS)
-				throw new java.io.IOException("Failed to connect to camera on USB port " + usbPort + "!");
+			if(numLoops >= CONNECTION_TIMEOUT_SECONDS) {
+				java.io.IOException ex = new java.io.IOException();
+				LOG.log(Level.SEVERE, ex.getMessage(), ex);
+				throw ex;
+			}
 			
 			numLoops++;
-			Thread.sleep(1000);
+			Thread.sleep(250);
 		}
 		
-		System.out.println("Connecting to SmartDashboard...");
+		LOG.info("Connecting to SmartDashboard...");
 		while(!smartDashboardConnected()) {
-			if(numLoops >= CONNECTION_TIMEOUT_SECONDS)
-				throw new java.net.ConnectException("Failed to connect to SmartDashboard!");
+			if(numLoops >= CONNECTION_TIMEOUT_SECONDS) {
+				java.net.ConnectException ex = new java.net.ConnectException("Failed to connect to SmartDashboard!");
+				LOG.log(Level.SEVERE, ex.getMessage(), ex);
+				throw ex;
+			}
 			
 			numLoops++;
-			Thread.sleep(1000);
+			Thread.sleep(250);
 		}
-		
-		System.out.println("Starting vision pipeline...");
 		
 		table.putBoolean("DemonVision", true);
+		
+		LOG.info("Started vision pipeline.");
+		
+		startTime = System.currentTimeMillis();
 		
 		while(true) {
 			try {
@@ -121,19 +144,36 @@ public class DemonVision {
 				video.read(image);
 				pipeline.process(image);
 				
-				ArrayList<MatOfPoint> contours = pipeline.filterContoursOutput();
+				ArrayList<MatOfPoint> contours = pipeline.findContoursOutput();
+				ArrayList<MatOfPoint> filteredContours = pipeline.filterContoursOutput();
 				
-				table.putNumber("Contours-Size", contours.size());
+				if(timeHasPassed(startTime, System.currentTimeMillis(), TIMEOUT)) {
+					Imgcodecs.imwrite("hslThresholdOutput.png", pipeline.hslThresholdOutput());
+					
+					if(contours.size() > 1) {
+						Imgcodecs.imwrite("contoursOutput[0].png", contours.get(0));
+						Imgcodecs.imwrite("contoursContoursOutput[1].png", contours.get(1));
+					}
+
+					if(filteredContours.size() > 1) {
+						Imgcodecs.imwrite("filteredContoursOutput[0].png", filteredContours.get(0));
+						Imgcodecs.imwrite("filteredContoursOutput[1].png", filteredContours.get(1));
+					}
+					
+					startTime = System.currentTimeMillis();
+				}
 				
-				if(contours.size() > 1) {
-					Rect top = Imgproc.boundingRect(contours.get(0));
-					Rect bottom = Imgproc.boundingRect(contours.get(1));
+				table.putNumber("Contours-Size", filteredContours.size());
+				
+				if(filteredContours.size() > 1) {
+					Rect top = Imgproc.boundingRect(filteredContours.get(0));
+					Rect bottom = Imgproc.boundingRect(filteredContours.get(1));
 
 					Boiler b = new Boiler(top, bottom);
 					b.publishData(table);
 					
-					final double ADJUSTED_YAW = VisionMath.getAdjustedYaw(robotYaw, b.getTopCenterXRatio());
-					final double SHOOTER_RPM = VisionMath.getIdealShooterRPM(farAngle, b.getTopCenterYRatio());
+					final double ADJUSTED_YAW = VisionMath.getAdjustedYaw(robotYaw, b);
+					final double SHOOTER_RPM = VisionMath.getIdealShooterRPM(farAngle, b);
 					
 					table.putNumber("NavX-Target-Yaw", ADJUSTED_YAW);
 					table.putNumber("Shooter-Target-RPM", SHOOTER_RPM);
@@ -141,12 +181,31 @@ public class DemonVision {
 				
 				image.release();
 				pipeline.releaseOutputs();
-				
-				Thread.sleep(200); // temporary
 			} catch(Exception ex) {
-				System.err.println("DemonVision has crashed!");
+				LOG.log(Level.SEVERE, "DemonVision has crashed!", ex);
 				throw ex;
+			} finally {
+				table.putBoolean("DemonVision", false);
+				image.release();
+				pipeline.releaseOutputs();
 			}
 		}
+	}
+	
+	/**
+	 * Helper method to determine if a certain amount of time is passed
+	 * @param start the start time, in milliseconds
+	 * @param current the current time to compare with start, in milliseconds
+	 * @param desiredPassedTime the desired past time, in milliseconds
+	 * @return true if the time has passed, false otherwise
+	 * @throws IllegalArgumentException if start time is greater than current time
+	 */
+	private static boolean timeHasPassed(long start, long current, long desiredPassedTime) {
+		if(start > current)
+			throw new IllegalArgumentException("start time cannot be greater than current time!");
+		
+		final long ACTUAL_TIME_PASSED = current - start;
+		
+		return ACTUAL_TIME_PASSED >= desiredPassedTime;
 	}
 }

@@ -111,16 +111,21 @@ public class DemonVisionPipeline implements VisionPipeline {
 	 * Releases the resources for the processed outputs
 	 */
 	public void releaseOutputs() {
-		resizeImageOutput.release();
-		blurOutput.release();
-		hslThresholdOutput.release();
+		if(resizeImageOutput != null)
+			resizeImageOutput.release();
+		if(blurOutput != null)
+			blurOutput.release();
+		if(hslThresholdOutput != null)
+			hslThresholdOutput.release();
 		
 		for(MatOfPoint p : findContoursOutput) {
-			p.release();
+			if(p != null)
+				p.release();
 		}
 		
 		for(MatOfPoint p : filterContoursOutput) {
-			p.release();
+			if(p != null)
+				p.release();
 		}
 	}
 
