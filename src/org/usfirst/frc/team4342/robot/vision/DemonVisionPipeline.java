@@ -334,4 +334,12 @@ public class DemonVisionPipeline implements VisionPipeline {
 			output.add(contour);
 		}
 	}
+	
+	/**
+	 * Frees all processed images
+	 */
+	@Override
+	protected void finalize() {
+		releaseOutputs();
+	}
 }

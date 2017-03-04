@@ -151,13 +151,13 @@ public class DemonVision {
 					Imgcodecs.imwrite("hslThresholdOutput.png", pipeline.hslThresholdOutput());
 					
 					if(contours.size() > 1) {
-						Imgcodecs.imwrite("contoursOutput[0].png", contours.get(0));
-						Imgcodecs.imwrite("contoursContoursOutput[1].png", contours.get(1));
+						Imgcodecs.imwrite("/home/pi/testthing/contoursOutput[0].png", contours.get(0));
+						Imgcodecs.imwrite("/home/pi/testthing/contoursContoursOutput[1].png", contours.get(1));
 					}
 
 					if(filteredContours.size() > 1) {
-						Imgcodecs.imwrite("filteredContoursOutput[0].png", filteredContours.get(0));
-						Imgcodecs.imwrite("filteredContoursOutput[1].png", filteredContours.get(1));
+						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[0].png", filteredContours.get(0));
+						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[1].png", filteredContours.get(1));
 					}
 					
 					startTime = System.currentTimeMillis();
@@ -207,5 +207,14 @@ public class DemonVision {
 		final long ACTUAL_TIME_PASSED = current - start;
 		
 		return ACTUAL_TIME_PASSED >= desiredPassedTime;
+	}
+	
+	/**
+	 * Frees all processed images
+	 */
+	@Override
+	protected void finalize() {
+		image.release();
+		pipeline.releaseOutputs();
 	}
 }
