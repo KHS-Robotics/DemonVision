@@ -144,21 +144,23 @@ public class DemonVision {
 				video.read(image);
 				pipeline.process(image);
 				
-				ArrayList<MatOfPoint> contours = pipeline.findContoursOutput();
+				//ArrayList<MatOfPoint> contours = pipeline.findContoursOutput();
 				ArrayList<MatOfPoint> filteredContours = pipeline.filterContoursOutput();
 				
 				if(timeHasPassed(startTime, System.currentTimeMillis(), TIMEOUT)) {
+					Imgcodecs.imwrite("resizedOutput.png", pipeline.resizeImageOutput());
+					Imgcodecs.imwrite("blurOutput.png", pipeline.blurOutput());
 					Imgcodecs.imwrite("hslThresholdOutput.png", pipeline.hslThresholdOutput());
 					
-					if(contours.size() > 1) {
-						Imgcodecs.imwrite("/home/pi/testthing/contoursOutput[0].png", contours.get(0));
-						Imgcodecs.imwrite("/home/pi/testthing/contoursContoursOutput[1].png", contours.get(1));
-					}
-
-					if(filteredContours.size() > 1) {
-						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[0].png", filteredContours.get(0));
-						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[1].png", filteredContours.get(1));
-					}
+//					if(contours.size() > 1) {
+//						Imgcodecs.imwrite("/home/pi/testthing/contoursOutput[0].png", contours.get(0));
+//						Imgcodecs.imwrite("/home/pi/testthing/contoursContoursOutput[1].png", contours.get(1));
+//					}
+//
+//					if(filteredContours.size() > 1) {
+//						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[0].png", filteredContours.get(0));
+//						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[1].png", filteredContours.get(1));
+//					}
 					
 					startTime = System.currentTimeMillis();
 				}

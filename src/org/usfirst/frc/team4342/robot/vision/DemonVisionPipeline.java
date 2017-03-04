@@ -67,9 +67,9 @@ public class DemonVisionPipeline implements VisionPipeline {
 
 		// Step HSL_Threshold0:
 		Mat hslThresholdInput = blurOutput;
-		double[] hslThresholdHue = {58.1209608584319, 112.49647798287761};
-		double[] hslThresholdSaturation = {63.93656261431534, 166.83510638297872};
-		double[] hslThresholdLuminance = {136.86440677966104, 253.69888559765923};
+		double[] hslThresholdHue = {40.0, 130.0};
+		double[] hslThresholdSaturation = {50.0, 180.0};
+		double[] hslThresholdLuminance = {120.0, 255.0};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation, hslThresholdLuminance, hslThresholdOutput);
 
 		// Step Find_Contours0:
