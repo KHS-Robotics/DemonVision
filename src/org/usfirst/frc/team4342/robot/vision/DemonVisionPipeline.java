@@ -62,14 +62,14 @@ public class DemonVisionPipeline implements VisionPipeline {
 		// Step Blur0:
 		Mat blurInput = resizeImageOutput;
 		BlurType blurType = BlurType.get("Gaussian Blur");
-		double blurRadius = 2.8301886792452833;
+		double blurRadius = 1.8018018018018018;
 		blur(blurInput, blurType, blurRadius, blurOutput);
 
 		// Step HSL_Threshold0:
 		Mat hslThresholdInput = blurOutput;
-		double[] hslThresholdHue = {40.0, 130.0};
-		double[] hslThresholdSaturation = {50.0, 180.0};
-		double[] hslThresholdLuminance = {120.0, 255.0};
+		double[] hslThresholdHue = {98.74100719424459, 180.0};
+		double[] hslThresholdSaturation = {123.59419449072685, 235.51782682512734};
+		double[] hslThresholdLuminance = {153.61765135238323, 248.5059422750424};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation, hslThresholdLuminance, hslThresholdOutput);
 
 		// Step Find_Contours0:

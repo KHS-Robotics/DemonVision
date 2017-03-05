@@ -23,7 +23,7 @@ public class DemonVision {
 	
 	private Logger LOG;
 	
-	private static final int CONNECTION_TIMEOUT_SECONDS = 120;
+	private static final int CONNECTION_TIMEOUT_SECONDS = 120 * 4;
 	private static final long TIMEOUT = 30 * 1000;
 	private int numLoops;
 	
@@ -134,8 +134,8 @@ public class DemonVision {
 		
 		startTime = System.currentTimeMillis();
 		
-		while(true) {
-			try {
+		try {
+			while(true) {
 				double robotYaw = table.getNumber("NavX-Yaw", 0.0);
 				boolean farAngle = table.getBoolean("Shooter-Solenoid", false);
 				
@@ -144,23 +144,12 @@ public class DemonVision {
 				video.read(image);
 				pipeline.process(image);
 				
-				//ArrayList<MatOfPoint> contours = pipeline.findContoursOutput();
 				ArrayList<MatOfPoint> filteredContours = pipeline.filterContoursOutput();
 				
 				if(timeHasPassed(startTime, System.currentTimeMillis(), TIMEOUT)) {
 					Imgcodecs.imwrite("resizedOutput.png", pipeline.resizeImageOutput());
 					Imgcodecs.imwrite("blurOutput.png", pipeline.blurOutput());
 					Imgcodecs.imwrite("hslThresholdOutput.png", pipeline.hslThresholdOutput());
-					
-//					if(contours.size() > 1) {
-//						Imgcodecs.imwrite("/home/pi/testthing/contoursOutput[0].png", contours.get(0));
-//						Imgcodecs.imwrite("/home/pi/testthing/contoursContoursOutput[1].png", contours.get(1));
-//					}
-//
-//					if(filteredContours.size() > 1) {
-//						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[0].png", filteredContours.get(0));
-//						Imgcodecs.imwrite("/home/pi/testthing/filteredContoursOutput[1].png", filteredContours.get(1));
-//					}
 					
 					startTime = System.currentTimeMillis();
 				}
@@ -183,14 +172,14 @@ public class DemonVision {
 				
 				image.release();
 				pipeline.releaseOutputs();
-			} catch(Exception ex) {
-				LOG.log(Level.SEVERE, "DemonVision has crashed!", ex);
-				throw ex;
-			} finally {
-				table.putBoolean("DemonVision", false);
-				image.release();
-				pipeline.releaseOutputs();
 			}
+		} catch(Exception ex) {
+			LOG.log(Level.SEVERE, "DemonVision has crashed!", ex);
+			throw ex;
+		} finally {
+			image.release();
+			pipeline.releaseOutputs();
+			table.putBoolean("DemonVision", false);
 		}
 	}
 	
