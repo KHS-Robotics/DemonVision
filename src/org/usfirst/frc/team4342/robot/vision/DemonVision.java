@@ -137,7 +137,7 @@ public class DemonVision {
 		try {
 			while(true) {
 				double robotYaw = table.getNumber("NavX-Yaw", 0.0);
-				boolean farAngle = table.getBoolean("Shooter-Solenoid", false);
+				//boolean farAngle = table.getBoolean("Shooter-Solenoid", false);
 				
 				image = new Mat();
 				
@@ -161,13 +161,13 @@ public class DemonVision {
 					Rect bottom = Imgproc.boundingRect(filteredContours.get(1));
 
 					Boiler b = new Boiler(top, bottom);
-					b.publishData(table);
+					//b.publishData(table);
 					
 					final double ADJUSTED_YAW = VisionMath.getAdjustedYaw(robotYaw, b);
-					final double SHOOTER_RPM = VisionMath.getIdealShooterRPM(farAngle, b);
+					//final double SHOOTER_RPM = VisionMath.getIdealShooterRPM(farAngle, b);
 					
-					table.putNumber("NavX-Target-Yaw", ADJUSTED_YAW);
-					table.putNumber("Shooter-Target-RPM", SHOOTER_RPM);
+					table.putNumber("Boiler-Yaw", ADJUSTED_YAW);
+					//table.putNumber("Shooter-Target-RPM", SHOOTER_RPM);
 				}
 				
 				image.release();
