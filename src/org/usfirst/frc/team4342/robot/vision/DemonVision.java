@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -24,13 +23,11 @@ public class DemonVision {
 	private Logger LOG;
 	
 	private static final int CONNECTION_TIMEOUT_SECONDS = 120 * 4;
-	private static final long TIMEOUT = 30 * 1000;
 	private int numLoops;
 	
 	private static NetworkTable table;
 	private final VideoCapture video;
-	
-	private long startTime;
+
 	private Mat image;
 	
 	private int usbPort;
@@ -132,12 +129,9 @@ public class DemonVision {
 		
 		LOG.info("Started vision pipeline.");
 		
-		startTime = System.currentTimeMillis();
-		
 		try {
 			while(true) {
 				double robotYaw = table.getNumber("NavX-Yaw", 0.0);
-				//boolean farAngle = table.getBoolean("Shooter-Solenoid", false);
 				
 				image = new Mat();
 				
@@ -146,14 +140,6 @@ public class DemonVision {
 				
 				ArrayList<MatOfPoint> filteredContours = pipeline.filterContoursOutput();
 				
-				if(timeHasPassed(startTime, System.currentTimeMillis(), TIMEOUT)) {
-					Imgcodecs.imwrite("resizedOutput.png", pipeline.resizeImageOutput());
-					Imgcodecs.imwrite("blurOutput.png", pipeline.blurOutput());
-					Imgcodecs.imwrite("rgbThresholdOutput.png", pipeline.rgbThresholdOutput());
-					
-					startTime = System.currentTimeMillis();
-				}
-				
 				table.putNumber("Contours-Size", filteredContours.size());
 				
 				if(filteredContours.size() > 1) {
@@ -161,13 +147,10 @@ public class DemonVision {
 					Rect bottom = Imgproc.boundingRect(filteredContours.get(1));
 
 					Boiler b = new Boiler(top, bottom);
-					//b.publishData(table);
 					
 					final double ADJUSTED_YAW = VisionMath.getAdjustedYaw(robotYaw, b);
-					//final double SHOOTER_RPM = VisionMath.getIdealShooterRPM(farAngle, b);
 					
 					table.putNumber("Boiler-Yaw", ADJUSTED_YAW);
-					//table.putNumber("Shooter-Target-RPM", SHOOTER_RPM);
 				}
 				
 				image.release();
@@ -181,23 +164,6 @@ public class DemonVision {
 			pipeline.releaseOutputs();
 			table.putBoolean("DemonVision", false);
 		}
-	}
-	
-	/**
-	 * Helper method to determine if a certain amount of time is passed
-	 * @param start the start time, in milliseconds
-	 * @param current the current time to compare with start, in milliseconds
-	 * @param desiredPassedTime the desired past time, in milliseconds
-	 * @return true if the time has passed, false otherwise
-	 * @throws IllegalArgumentException if start time is greater than current time
-	 */
-	private static boolean timeHasPassed(long start, long current, long desiredPassedTime) {
-		if(start > current)
-			throw new IllegalArgumentException("start time cannot be greater than current time!");
-		
-		final long ACTUAL_TIME_PASSED = current - start;
-		
-		return ACTUAL_TIME_PASSED >= desiredPassedTime;
 	}
 	
 	/**
