@@ -3,6 +3,8 @@ package org.usfirst.frc.team4342.robot.vision;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.vision.VisionPipeline;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -14,8 +16,6 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import edu.wpi.first.wpilibj.vision.VisionPipeline;
-
 /**
 * DemonVisionPipeline class.
 *
@@ -25,33 +25,22 @@ import edu.wpi.first.wpilibj.vision.VisionPipeline;
 */
 public class DemonVisionPipeline implements VisionPipeline {
 
-	// Outputs
+	//Outputs
 	private Mat resizeImageOutput = new Mat();
 	private Mat blurOutput = new Mat();
-	private Mat hslThresholdOutput = new Mat();
+	private Mat rgbThresholdOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
+	private ArrayList<MatOfPoint> convexHullsOutput = new ArrayList<MatOfPoint>();
 
-	// Load OpenCV 3.1
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
-	 * 
-	 * <p>
-	 * 	<ol>
-	 * 		<li>Resize the image to 360x240</li>
-	 * 		<li>Blur the image to reduce noise (specifically, Gaussian Blur)</li>
-	 * 		<li>Use HSL Threshold to only keep blue objects</li>
-	 * 		<li>Find the contours</li>
-	 * 		<li>Filter the contours</li>
-	 * 	</ol>
-	 * </p>
 	 */
-	@Override	
-	public void process(Mat source0) {
+	@Override	public void process(Mat source0) {
 		// Step Resize_Image0:
 		Mat resizeImageInput = source0;
 		double resizeImageWidth = 360.0;
@@ -62,18 +51,18 @@ public class DemonVisionPipeline implements VisionPipeline {
 		// Step Blur0:
 		Mat blurInput = resizeImageOutput;
 		BlurType blurType = BlurType.get("Gaussian Blur");
-		double blurRadius = 1.8018018018018018;
+		double blurRadius = 1.8867924528301894;
 		blur(blurInput, blurType, blurRadius, blurOutput);
 
-		// Step HSL_Threshold0:
-		Mat hslThresholdInput = blurOutput;
-		double[] hslThresholdHue = {98.74100719424459, 180.0};
-		double[] hslThresholdSaturation = {123.59419449072685, 235.51782682512734};
-		double[] hslThresholdLuminance = {153.61765135238323, 248.5059422750424};
-		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation, hslThresholdLuminance, hslThresholdOutput);
+		// Step RGB_Threshold0:
+		Mat rgbThresholdInput = blurOutput;
+		double[] rgbThresholdRed = {0.0, 69.62765957446808};
+		double[] rgbThresholdGreen = {84.03954802259886, 255.0};
+		double[] rgbThresholdBlue = {0.0, 44.76063829787234};
+		rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, rgbThresholdOutput);
 
 		// Step Find_Contours0:
-		Mat findContoursInput = hslThresholdOutput;
+		Mat findContoursInput = rgbThresholdOutput;
 		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
 
@@ -90,43 +79,11 @@ public class DemonVisionPipeline implements VisionPipeline {
 		double filterContoursMinVertices = 0.0;
 		double filterContoursMinRatio = 0.0;
 		double filterContoursMaxRatio = 1000.0;
-		filterContours(
-			filterContoursContours, 
-			filterContoursMinArea, 
-			filterContoursMinPerimeter, 
-			filterContoursMinWidth, 
-			filterContoursMaxWidth, 
-			filterContoursMinHeight, 
-			filterContoursMaxHeight, 
-			filterContoursSolidity, 
-			filterContoursMaxVertices, 
-			filterContoursMinVertices, 
-			filterContoursMinRatio, 
-			filterContoursMaxRatio, 
-			filterContoursOutput
-		);
-	}
-	
-	/**
-	 * Releases the resources for the processed outputs
-	 */
-	public void releaseOutputs() {
-		if(resizeImageOutput != null)
-			resizeImageOutput.release();
-		if(blurOutput != null)
-			blurOutput.release();
-		if(hslThresholdOutput != null)
-			hslThresholdOutput.release();
-		
-		for(MatOfPoint p : findContoursOutput) {
-			if(p != null)
-				p.release();
-		}
-		
-		for(MatOfPoint p : filterContoursOutput) {
-			if(p != null)
-				p.release();
-		}
+		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
+
+		// Step Convex_Hulls0:
+		ArrayList<MatOfPoint> convexHullsContours = filterContoursOutput;
+		convexHulls(convexHullsContours, convexHullsOutput);
 	}
 
 	/**
@@ -146,11 +103,11 @@ public class DemonVisionPipeline implements VisionPipeline {
 	}
 
 	/**
-	 * This method is a generated getter for the output of a HSL_Threshold.
-	 * @return Mat output from HSL_Threshold.
+	 * This method is a generated getter for the output of a RGB_Threshold.
+	 * @return Mat output from RGB_Threshold.
 	 */
-	public Mat hslThresholdOutput() {
-		return hslThresholdOutput;
+	public Mat rgbThresholdOutput() {
+		return rgbThresholdOutput;
 	}
 
 	/**
@@ -169,6 +126,31 @@ public class DemonVisionPipeline implements VisionPipeline {
 		return filterContoursOutput;
 	}
 
+	/**
+	 * This method is a generated getter for the output of a Convex_Hulls.
+	 * @return ArrayList<MatOfPoint> output from Convex_Hulls.
+	 */
+	public ArrayList<MatOfPoint> convexHullsOutput() {
+		return convexHullsOutput;
+	}
+	
+	public void releaseOutputs() {
+		resizeImageOutput.release();
+		blurOutput.release();
+		rgbThresholdOutput.release();
+		
+		for(MatOfPoint p : findContoursOutput) {
+			p.release();
+		}
+		
+		for(MatOfPoint p : filterContoursOutput) {
+			p.release();
+		}
+		
+		for(MatOfPoint p : convexHullsOutput) {
+			p.release();
+		}
+	}
 
 	/**
 	 * Scales and image to an exact size.
@@ -249,19 +231,18 @@ public class DemonVisionPipeline implements VisionPipeline {
 	}
 
 	/**
-	 * Segment an image based on hue, saturation, and luminance ranges.
-	 *
-	 * @param input The image on which to perform the HSL threshold.
-	 * @param hue The min and max hue
-	 * @param sat The min and max saturation
-	 * @param lum The min and max luminance
+	 * Segment an image based on color ranges.
+	 * @param input The image on which to perform the RGB threshold.
+	 * @param red The min and max red.
+	 * @param green The min and max green.
+	 * @param blue The min and max blue.
 	 * @param output The image in which to store the output.
 	 */
-	private void hslThreshold(Mat input, double[] hue, double[] sat, double[] lum,
+	private void rgbThreshold(Mat input, double[] red, double[] green, double[] blue,
 		Mat out) {
-		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HLS);
-		Core.inRange(out, new Scalar(hue[0], lum[0], sat[0]),
-			new Scalar(hue[1], lum[1], sat[1]), out);
+		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2RGB);
+		Core.inRange(out, new Scalar(red[0], green[0], blue[0]),
+			new Scalar(red[1], green[1], blue[1]), out);
 	}
 
 	/**
@@ -334,10 +315,30 @@ public class DemonVisionPipeline implements VisionPipeline {
 			output.add(contour);
 		}
 	}
-	
+
 	/**
-	 * Frees all processed images
+	 * Compute the convex hulls of contours.
+	 * @param inputContours The contours on which to perform the operation.
+	 * @param outputContours The contours where the output will be stored.
 	 */
+	private void convexHulls(List<MatOfPoint> inputContours,
+		ArrayList<MatOfPoint> outputContours) {
+		final MatOfInt hull = new MatOfInt();
+		outputContours.clear();
+		for (int i = 0; i < inputContours.size(); i++) {
+			final MatOfPoint contour = inputContours.get(i);
+			final MatOfPoint mopHull = new MatOfPoint();
+			Imgproc.convexHull(contour, hull);
+			mopHull.create((int) hull.size().height, 1, CvType.CV_32SC2);
+			for (int j = 0; j < hull.size().height; j++) {
+				int index = (int) hull.get(j, 0)[0];
+				double[] point = new double[] {contour.get(index, 0)[0], contour.get(index, 0)[1]};
+				mopHull.put(j, 0, point);
+			}
+			outputContours.add(mopHull);
+		}
+	}
+	
 	@Override
 	protected void finalize() {
 		releaseOutputs();

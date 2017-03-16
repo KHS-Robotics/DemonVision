@@ -149,7 +149,7 @@ public class DemonVision {
 				if(timeHasPassed(startTime, System.currentTimeMillis(), TIMEOUT)) {
 					Imgcodecs.imwrite("resizedOutput.png", pipeline.resizeImageOutput());
 					Imgcodecs.imwrite("blurOutput.png", pipeline.blurOutput());
-					Imgcodecs.imwrite("hslThresholdOutput.png", pipeline.hslThresholdOutput());
+					Imgcodecs.imwrite("rgbThresholdOutput.png", pipeline.rgbThresholdOutput());
 					
 					startTime = System.currentTimeMillis();
 				}
