@@ -41,8 +41,7 @@ public class DemonVision implements Runnable {
 	 * Constructs a new <code>DemonVision</code>
 	 * @param cam the camera being used
 	 * @param parameters the parameters for the pipeline processing images from the camera
-	 * @param processor the processor to process raw target information from the pipeline
-	 * @param listeners the listeners to utilize processed targets from the processor
+	 * @param listeners the listeners to utilize processed targets
 	 */
 	public DemonVision(Camera cam, PiplelineParameters parameters, Listener[] listeners) {
 		this.cam = cam;
@@ -54,8 +53,7 @@ public class DemonVision implements Runnable {
 	 * Constructs a new <code>DemonVision</code>
 	 * @param cam the camera being used
 	 * @param parameters the parameters for the pipeline processing images from the camera
-	 * @param processor the processor to process raw target information from the pipeline
-	 * @param listener the listener to utilize processed targets from the processor
+	 * @param listener the listener to utilize processed targets
 	 */
 	public DemonVision(Camera cam, PiplelineParameters parameters, Listener listener) {
 		this(cam, parameters, new Listener[] { listener });
