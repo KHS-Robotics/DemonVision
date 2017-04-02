@@ -39,6 +39,8 @@ public class ShootingTable {
 			return map.get(key);
 		}
 
+		// Key is not in table, try to find
+		// the next best key
 		Double lowKey = keys.lower(key);
 		Double highKey = keys.ceiling(key);
 		
