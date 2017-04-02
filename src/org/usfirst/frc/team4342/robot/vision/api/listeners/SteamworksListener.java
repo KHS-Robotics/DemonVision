@@ -1,10 +1,8 @@
 package org.usfirst.frc.team4342.robot.vision.api.listeners;
 
-import org.usfirst.frc.team4342.robot.vision.DemonVision;
 import org.usfirst.frc.team4342.robot.vision.api.cameras.Camera;
+import org.usfirst.frc.team4342.robot.vision.api.tables.SmartDashboard;
 import org.usfirst.frc.team4342.robot.vision.api.target.Target;
-
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
  * <p>Listener for FIRST SteamWORKS</p>
@@ -13,8 +11,6 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
  * that the robot should orient to to shoot
  */
 public class SteamworksListener implements Listener {
-	private static NetworkTable table = DemonVision.getSmartDashboard();
-	
 	private Camera camera;
 	
 	/**
@@ -32,15 +28,15 @@ public class SteamworksListener implements Listener {
 	 */
 	@Override
 	public void processTargets(Target[] targets) {
-		table.putNumber("DV-Targets", targets.length);
+		SmartDashboard.putNumber("DV-Targets", targets.length);
 		
 		if(targets.length > 1) {
 			Target top = targets[0];
 			
-			double robotYaw = table.getNumber("NavX-Yaw", 0.0);
+			double robotYaw = SmartDashboard.getNumber("NavX-Yaw", 0.0);
 			double boilerYaw = robotYaw + top.getYawOffset(camera.getFOV());
 			
-			table.putNumber("Boiler-Yaw", boilerYaw);
+			SmartDashboard.putNumber("Boiler-Yaw", boilerYaw);
 		}
 	}
 }

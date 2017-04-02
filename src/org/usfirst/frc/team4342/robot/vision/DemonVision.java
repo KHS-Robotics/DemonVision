@@ -9,6 +9,7 @@ import org.usfirst.frc.team4342.robot.vision.api.cameras.Camera;
 import org.usfirst.frc.team4342.robot.vision.api.listeners.Listener;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.DemonVisionPipeline;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PiplelineParameters;
+import org.usfirst.frc.team4342.robot.vision.api.tables.SmartDashboard;
 import org.usfirst.frc.team4342.robot.vision.api.target.TargetProcessor;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -29,15 +30,6 @@ public class DemonVision implements Runnable {
 		NetworkTable.setClientMode();
 		NetworkTable.setNetworkIdentity(COPROCESSOR_NETWORK_ID);
 		NetworkTable.setIPAddress("roborio-" + TEAM_NUMBER + "-frc.local");
-	}
-	
-	private static NetworkTable table;
-	
-	public static final NetworkTable getSmartDashboard() {
-		if(table == null)
-			table = NetworkTable.getTable("SmartDashboard");
-		
-		return table;
 	}
 	
 	private DemonVisionPipeline pipeline;
@@ -100,7 +92,7 @@ public class DemonVision implements Runnable {
 	 * Indefinitely processes images from the camera
 	 */
 	public void runForever() {
-		table.putBoolean("DemonVision", true);
+		SmartDashboard.putBoolean("DemonVision", true);
 		
 		while(true) {
 			try {
@@ -111,13 +103,13 @@ public class DemonVision implements Runnable {
 			}
 		}
 		
-		table.putBoolean("DemonVision", false);
+		SmartDashboard.putBoolean("DemonVision", false);
 	}
 	
 	/**
 	 * Processes images from the camera a fixed number of times
 	 * @param times the number of times
-	 * @throws IllegalArgumentException if times is equal to or less than zero
+	 * @throws IllegalArgumentException if times is less than zero
 	 */
 	public void run(final int times) {
 		if(times < 0)
