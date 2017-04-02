@@ -19,12 +19,10 @@ import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.RGBBounds;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.Resolution;
 import org.usfirst.frc.team4342.robot.vision.api.target.TargetSource;
 
-import edu.wpi.first.wpilibj.vision.VisionPipeline;
-
 /**
  * Looks for contours
  */
-public class DemonVisionPipeline implements VisionPipeline, TargetSource {
+public class DemonVisionPipeline implements TargetSource {
 	private Resolution res;
 	private Blur blur;
 	private RGBBounds rgb;
@@ -49,7 +47,6 @@ public class DemonVisionPipeline implements VisionPipeline, TargetSource {
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
-	@Override	
 	public void process(Mat source0) {
 		// Step Resize_Image0:
 		Mat resizeImageInput = source0;

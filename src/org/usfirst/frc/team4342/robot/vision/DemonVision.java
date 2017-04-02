@@ -1,5 +1,9 @@
 package org.usfirst.frc.team4342.robot.vision;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.usfirst.frc.team4342.robot.vision.api.cameras.Camera;
 import org.usfirst.frc.team4342.robot.vision.api.listeners.Listener;
@@ -7,10 +11,35 @@ import org.usfirst.frc.team4342.robot.vision.api.pipelines.DemonVisionPipeline;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PiplelineParameters;
 import org.usfirst.frc.team4342.robot.vision.api.target.TargetProcessor;
 
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+
 /**
  * Class to handle the dirty work for processing a target
  */
 public class DemonVision implements Runnable {
+	// Network Tables
+	private static final int TEAM_NUMBER = 4342;
+	private static final String COPROCESSOR_NETWORK_ID = "raspberry-pi-3";
+		
+	static {
+		// Load OpenCV 3.1
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		
+		// Configure NetworkTables
+		NetworkTable.setClientMode();
+		NetworkTable.setNetworkIdentity(COPROCESSOR_NETWORK_ID);
+		NetworkTable.setIPAddress("roborio-" + TEAM_NUMBER + "-frc.local");
+	}
+	
+	private static NetworkTable table;
+	
+	public static final NetworkTable getSmartDashboard() {
+		if(table == null)
+			table = NetworkTable.getTable("SmartDashboard");
+		
+		return table;
+	}
+	
 	private DemonVisionPipeline pipeline;
 	
 	private Camera cam;
@@ -71,9 +100,18 @@ public class DemonVision implements Runnable {
 	 * Indefinitely processes images from the camera
 	 */
 	public void runForever() {
+		table.putBoolean("DemonVision", true);
+		
 		while(true) {
-			runOnce();
+			try {
+				runOnce();
+			} catch(Exception ex) {
+				Logger.getLogger(DemonVision.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+				break;
+			}
 		}
+		
+		table.putBoolean("DemonVision", false);
 	}
 	
 	/**
