@@ -287,6 +287,7 @@ public class DemonVisionPipeline implements TargetSource {
 	 */
 	@Override
 	protected void finalize() throws Throwable {
+		super.finalize();
 		this.releaseOutputs();
 	}
 }

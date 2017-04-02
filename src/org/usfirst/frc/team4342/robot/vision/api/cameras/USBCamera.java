@@ -50,4 +50,13 @@ public class USBCamera extends Camera {
 	public int getNumber() {
 		return number;
 	}
+	
+	/**
+	 * Frees resources
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		vc.release();
+	}
 }
