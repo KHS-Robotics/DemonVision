@@ -36,6 +36,8 @@ public class SteamworksListener implements Listener {
 			double robotYaw = SmartDashboard.getNumber("NavX-Yaw", 0.0);
 			double boilerYaw = robotYaw + top.getYawOffset(camera.getFOV());
 			
+			SmartDashboard.putNumber("Boiler-CenterX-Ratio", top.getCenterXRatio());
+			SmartDashboard.putNumber("Boiler-CenterY-Ratio", top.getCenterYRatio());
 			SmartDashboard.putNumber("Boiler-Yaw", boilerYaw);
 		}
 	}
