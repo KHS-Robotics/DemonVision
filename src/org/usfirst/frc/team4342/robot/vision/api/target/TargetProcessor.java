@@ -14,7 +14,7 @@ public final class TargetProcessor {
 	 * @param source the source of the raw targets
 	 * @return processed targets
 	 */
-	public static Target[] process(TargetSource source) {
+	public static TargetReport process(TargetSource source) {
 		Rect[] rawTargets = source.getRawTargets();
 		Target[] targets = new Target[rawTargets.length];
 		
@@ -26,6 +26,6 @@ public final class TargetProcessor {
 			targets[i] = new Target(rawTarget.width, rawTarget.height, centerXRatio, centerYRatio);
 		}
 
-		return targets;
+		return new TargetReport(targets);
 	}
 }

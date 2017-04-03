@@ -3,6 +3,7 @@ package org.usfirst.frc.team4342.robot.vision.api.listeners;
 import org.usfirst.frc.team4342.robot.vision.api.cameras.Camera;
 import org.usfirst.frc.team4342.robot.vision.api.tables.SmartDashboard;
 import org.usfirst.frc.team4342.robot.vision.api.target.Target;
+import org.usfirst.frc.team4342.robot.vision.api.target.TargetReport;
 
 /**
  * <p>Listener for FIRST SteamWORKS</p>
@@ -27,11 +28,11 @@ public class SteamworksListener implements Listener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processTargets(Target[] targets) {
-		SmartDashboard.putNumber("DV-Targets", targets.length);
+	public void processTargets(TargetReport report) {
+		SmartDashboard.putNumber("DV-Targets", report.getTargetCount());
 		
-		if(targets.length > 1) {
-			Target top = targets[0];
+		if(report.getTargetCount() > 1) {
+			Target top = report.getTarget(0);
 			
 			double robotYaw = SmartDashboard.getNumber("NavX-Yaw", 0.0);
 			double boilerYaw = robotYaw + top.getYawOffset(camera.getFOV());
