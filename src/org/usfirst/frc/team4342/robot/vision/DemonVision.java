@@ -104,8 +104,9 @@ public class DemonVision implements Runnable {
 	 */
 	public void runOnce() {
 		if(cam == null) {
-			Exception ex = new NullPointerException("Camera was not specified at construction! Please specify a camera in the constructor");
+			NullPointerException ex = new NullPointerException("Camera was not specified at construction! Please specify a camera in the constructor");
 			Logger.getLogger(DemonVision.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+			throw ex;
 		}
 			
 		runOnce(cam.getFrame());
