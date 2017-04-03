@@ -90,7 +90,11 @@ public class DemonVision implements Runnable {
 	@Override
 	public void run() {
 		while(!Thread.interrupted()) {
-			runOnce();
+			try {
+				runOnce();
+			} catch(Exception ex) {
+				break;
+			}
 		}
 	}
 	
@@ -99,8 +103,10 @@ public class DemonVision implements Runnable {
 	 * @throws NullPointerException if the camera is null
 	 */
 	public void runOnce() {
-		if(cam == null)
-			throw new NullPointerException("Camera was not specified at construction! Please specify a camera in the constructor");
+		if(cam == null) {
+			Exception ex = new NullPointerException("Camera was not specified at construction! Please specify a camera in the constructor");
+			Logger.getLogger(DemonVision.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+		}
 			
 		runOnce(cam.getFrame());
 	}
@@ -129,6 +135,7 @@ public class DemonVision implements Runnable {
 			img.release();
 		} catch(Exception ex) {
 			Logger.getLogger(DemonVision.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+			throw ex;
 		}
 	}
 	
@@ -160,8 +167,12 @@ public class DemonVision implements Runnable {
 			
 		int current = 0;
 		while(current < times) {
-			runOnce();
-			current++;
+			try {
+				runOnce();
+				current++;
+			} catch(Exception ex) {
+				break;
+			}
 		}
 	}
 }
