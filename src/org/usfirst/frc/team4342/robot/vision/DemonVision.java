@@ -10,6 +10,7 @@ import org.usfirst.frc.team4342.robot.vision.api.listeners.Listener;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.DemonVisionPipeline;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PipelineParameters;
 import org.usfirst.frc.team4342.robot.vision.api.tables.SmartDashboard;
+import org.usfirst.frc.team4342.robot.vision.api.target.Target;
 import org.usfirst.frc.team4342.robot.vision.api.target.TargetProcessor;
 import org.usfirst.frc.team4342.robot.vision.api.target.TargetSource;
 
@@ -128,8 +129,9 @@ public class DemonVision implements Runnable {
 		try {
 			source.process(img);
 			
+			Target[] targets = TargetProcessor.process(source);
 			for(Listener listener : listeners) {
-				listener.processTargets(TargetProcessor.process(source));
+				listener.processTargets(targets);
 			}
 			
 			source.releaseOutputs();
