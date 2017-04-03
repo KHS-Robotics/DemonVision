@@ -72,7 +72,7 @@ public class ShootingTable {
 		public int compare(Double a, Double b) {
 			double difference = Math.abs(a - b);
 			
-			if(difference <= TOLERANCE) {
+			if(difference < TOLERANCE) {
 				return 0;
 			}
 			
