@@ -17,6 +17,14 @@ public abstract class Camera {
 	}
 	
 	/**
+	 * Gets the field of view of the camera in degrees
+	 * @return the field of view of the camera in degrees
+	 */
+	public double getFOV() {
+		return fov;
+	}
+	
+	/**
 	 * Gets if the camera is connected
 	 * @return true if connected, false otherwise
 	 */
@@ -29,10 +37,9 @@ public abstract class Camera {
 	public abstract Mat getFrame();
 	
 	/**
-	 * Gets the field of view of the camera in degrees
-	 * @return the field of view of the camera in degrees
+	 * Frees resources
 	 */
-	public double getFOV() {
-		return fov;
+	protected void finalize() throws Throwable {
+		super.finalize();
 	}
 }

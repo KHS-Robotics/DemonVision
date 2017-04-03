@@ -4,7 +4,7 @@ package org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters;
  * Class to encapsulate all of the parameters for the DemonVision pipeline
  * @see org.usfirst.frc.team4342.robot.vision.api.pipelines.DemonVisionPipeline
  */
-public class PiplelineParameters {
+public class PipelineParameters {
 	private Resolution res;
 	private Blur blur;
 	private RGBBounds rgb;
@@ -15,7 +15,7 @@ public class PiplelineParameters {
 	 * @param blur the type and amount to blur
 	 * @param rgb the bounds for the RGB threshold
 	 */
-	public PiplelineParameters(Resolution res, Blur blur, RGBBounds rgb) {
+	public PipelineParameters(Resolution res, Blur blur, RGBBounds rgb) {
 		this.res = res;
 		this.blur = blur;
 		this.rgb = rgb;

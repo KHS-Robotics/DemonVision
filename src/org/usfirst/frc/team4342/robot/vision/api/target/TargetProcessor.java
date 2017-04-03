@@ -23,7 +23,7 @@ public final class TargetProcessor {
 			double centerXRatio = (double) (rawTarget.x + ((double) rawTarget.width / 2.0)) / ((double) source.getResolution().getX());
 			double centerYRatio = (double) (rawTarget.y + ((double) rawTarget.height / 2.0)) / ((double) source.getResolution().getY());
 			
-			targets[i] = new Target(centerXRatio, centerYRatio);
+			targets[i] = new Target(rawTarget.width, rawTarget.height, centerXRatio, centerYRatio);
 		}
 
 		return targets;

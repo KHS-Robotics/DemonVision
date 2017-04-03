@@ -14,7 +14,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.Blur;
-import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PiplelineParameters;
+import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PipelineParameters;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.RGBBounds;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.Resolution;
 import org.usfirst.frc.team4342.robot.vision.api.target.TargetSource;
@@ -27,14 +27,24 @@ public class DemonVisionPipeline implements TargetSource {
 	private Blur blur;
 	private RGBBounds rgb;
 	
-	private PiplelineParameters parameters;
+	/**
+	 * Constructs a new <code>DemonVisionPipeline</code>
+	 * @param resolution the resolution of the processed image
+	 * @param blur the type and amount to blur
+	 * @param rgb the bounds for the RGB threshold
+	 */
+	public DemonVisionPipeline(Resolution resolution, Blur blur, RGBBounds rgb) {
+		this.res = resolution;
+		this.blur = blur;
+		this.rgb = rgb;
+	}
 	
-	public DemonVisionPipeline(PiplelineParameters parameters) {
-		this.parameters = parameters;
-		
-		res = this.parameters.getResolution();
-		blur = this.parameters.getBlur();
-		rgb = this.parameters.getRGB();
+	/**
+	 * Constructs a new <code>DemonVisionPipeline</code>
+	 * @param parameters the pipeline parameters
+	 */
+	public DemonVisionPipeline(PipelineParameters parameters) {
+		this(parameters.getResolution(), parameters.getBlur(), parameters.getRGB());
 	}
 	
 	// Outputs
@@ -47,9 +57,10 @@ public class DemonVisionPipeline implements TargetSource {
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
-	public void process(Mat source0) {
+	@Override
+	public void process(Mat source) {
 		// Step Resize_Image0:
-		Mat resizeImageInput = source0;
+		Mat resizeImageInput = source;
 		double resizeImageWidth = (double) res.getX();
 		double resizeImageHeight = (double) res.getY();
 		int resizeImageInterpolation = Imgproc.INTER_CUBIC;
@@ -89,16 +100,25 @@ public class DemonVisionPipeline implements TargetSource {
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Resolution getResolution() {
 		return res;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<MatOfPoint> getContoursReport() {
 		return filterContoursOutput();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void releaseOutputs() {
 		resizeImageOutput.release();
 		blurOutput.release();

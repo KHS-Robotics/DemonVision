@@ -3,36 +3,21 @@ package org.usfirst.frc.team4342.robot.vision;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.usfirst.frc.team4342.robot.vision.api.cameras.Camera;
 import org.usfirst.frc.team4342.robot.vision.api.listeners.Listener;
 import org.usfirst.frc.team4342.robot.vision.api.pipelines.DemonVisionPipeline;
-import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PiplelineParameters;
+import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PipelineParameters;
 import org.usfirst.frc.team4342.robot.vision.api.tables.SmartDashboard;
 import org.usfirst.frc.team4342.robot.vision.api.target.TargetProcessor;
-
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import org.usfirst.frc.team4342.robot.vision.api.target.TargetSource;
 
 /**
  * Class to handle the dirty work for processing a target
  */
 public class DemonVision implements Runnable {
-	// Network Tables
-	private static final int TEAM_NUMBER = 4342;
-	private static final String COPROCESSOR_NETWORK_ID = "raspberry-pi-3";
-		
-	static {
-		// Load OpenCV 3.1
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		
-		// Configure NetworkTables
-		NetworkTable.setClientMode();
-		NetworkTable.setNetworkIdentity(COPROCESSOR_NETWORK_ID);
-		NetworkTable.setIPAddress("roborio-" + TEAM_NUMBER + "-frc.local");
-	}
-	
-	private DemonVisionPipeline pipeline;
+	private TargetSource source;
 	
 	private Camera cam;
 	private Listener[] listeners;
@@ -40,13 +25,33 @@ public class DemonVision implements Runnable {
 	/**
 	 * Constructs a new <code>DemonVision</code>
 	 * @param cam the camera being used
+	 * @param source the source to get raw targets from
+	 * @param listeners the listeners to utilize processed targets
+	 */
+	public DemonVision(Camera cam, TargetSource source, Listener[] listeners) {
+		this.cam = cam;
+		this.source = source;
+		this.listeners = listeners;
+	}
+	
+	/**
+	 * Constructs a new <code>DemonVision</code>
+	 * @param cam the camera being used
+	 * @param source the source to get raw targets from
+	 * @param listener the listener to utilize processed targets
+	 */
+	public DemonVision(Camera cam, TargetSource source, Listener listener) {
+		this(cam, source, new Listener[] { listener });
+	}
+	
+	/**
+	 * Constructs a new <code>DemonVision</code>
+	 * @param cam the camera being used
 	 * @param parameters the parameters for the pipeline processing images from the camera
 	 * @param listeners the listeners to utilize processed targets
 	 */
-	public DemonVision(Camera cam, PiplelineParameters parameters, Listener[] listeners) {
-		this.cam = cam;
-		this.pipeline = new DemonVisionPipeline(parameters);
-		this.listeners = listeners;
+	public DemonVision(Camera cam, PipelineParameters parameters, Listener[] listeners) {
+		this(cam, new DemonVisionPipeline(parameters), listeners);
 	}
 	
 	/**
@@ -55,8 +60,26 @@ public class DemonVision implements Runnable {
 	 * @param parameters the parameters for the pipeline processing images from the camera
 	 * @param listener the listener to utilize processed targets
 	 */
-	public DemonVision(Camera cam, PiplelineParameters parameters, Listener listener) {
-		this(cam, parameters, new Listener[] { listener });
+	public DemonVision(Camera cam, PipelineParameters parameters, Listener listener) {
+		this(cam, new DemonVisionPipeline(parameters), listener);
+	}
+	
+	/**
+	 * Constructs a new <code>DemonVision</code>
+	 * @param parameters the parameters for the pipeline processing images from the camera
+	 * @param listeners the listeners to utilize processed targets
+	 */
+	public DemonVision(PipelineParameters parameters, Listener[] listeners) {
+		this(null, parameters, listeners);
+	}
+	
+	/**
+	 * Constructs a new <code>DemonVision</code>
+	 * @param parameters the parameters for the pipeline processing images from the camera
+	 * @param listener the listener to utilize processed targets
+	 */
+	public DemonVision(PipelineParameters parameters, Listener listener) {
+		this(null, parameters, listener);
 	}
 	
 	/**
@@ -72,18 +95,41 @@ public class DemonVision implements Runnable {
 	}
 	
 	/**
-	 * Processes an image
+	 * Processes an image from the camera
+	 * @throws NullPointerException if the camera is null
 	 */
 	public void runOnce() {
-		Mat img = cam.getFrame();
-		pipeline.process(img);
-		
-		for(Listener listener : listeners) {
-			listener.processTargets(TargetProcessor.process(pipeline));
+		if(cam == null)
+			throw new NullPointerException("Camera was not specified at construction! Please specify a camera in the constructor");
+			
+		runOnce(cam.getFrame());
+	}
+	
+	/**
+	 * Processes a specified image
+	 * @param path the path to the image
+	 */
+	public void runOnce(String path) {
+		runOnce(Imgcodecs.imread(path));
+	}
+	
+	/**
+	 * Processes a specified image
+	 * @param img the image to process
+	 */
+	public void runOnce(Mat img) {
+		try {
+			source.process(img);
+			
+			for(Listener listener : listeners) {
+				listener.processTargets(TargetProcessor.process(source));
+			}
+			
+			source.releaseOutputs();
+			img.release();
+		} catch(Exception ex) {
+			Logger.getLogger(DemonVision.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
 		}
-		
-		pipeline.releaseOutputs();
-		img.release();
 	}
 	
 	/**
@@ -96,7 +142,6 @@ public class DemonVision implements Runnable {
 			try {
 				runOnce();
 			} catch(Exception ex) {
-				Logger.getLogger(DemonVision.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
 				break;
 			}
 		}
