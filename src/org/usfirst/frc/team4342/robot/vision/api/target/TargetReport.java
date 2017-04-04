@@ -32,11 +32,11 @@ public class TargetReport {
 	
 	/**
 	 * Gets a found target from the list of targets
-	 * @param number the target's index in the array
+	 * @param index the target's index in the array
 	 * @return the target at the specified index
 	 */
-	public Target getTarget(int number) {
-		return targets[number];
+	public Target getTarget(int index) {
+		return targets[index];
 	}
 	
 	/**
@@ -46,6 +46,9 @@ public class TargetReport {
 	 */
 	@Override
 	public String toString() {
+		if(targets.length == 0)
+			return "[]";
+		
 		String str = "[";
 		
 		for(Target t : targets) {
@@ -64,6 +67,9 @@ public class TargetReport {
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		if(obj == null)
+			return false;
+		
 		TargetReport report = (TargetReport) obj;
 		
 		if(this.getTargetCount() != report.getTargetCount())
