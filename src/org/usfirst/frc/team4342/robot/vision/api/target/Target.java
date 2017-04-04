@@ -94,7 +94,7 @@ public class Target {
 		
 		final double TOLERANCE = 0.02;
 		final double X_DIFF = Math.abs(this.getCenterXRatio() - target.getCenterXRatio());
-		final double Y_DIFF = Math.abs(this.getCenterYRatio() - this.getCenterYRatio());
+		final double Y_DIFF = Math.abs(this.getCenterYRatio() - target.getCenterYRatio());
 		
 		return (this.getArea() == target.getArea()) && (X_DIFF < TOLERANCE) && (Y_DIFF < TOLERANCE);
 	}
