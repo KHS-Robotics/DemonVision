@@ -38,4 +38,24 @@ public class TargetReport {
 	public Target getTarget(int number) {
 		return targets[number];
 	}
+	
+	/**
+	 * <p>Determines if two <code>TargetReport</code> objects are equal</p>
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		TargetReport report = (TargetReport) obj;
+		
+		if(this.getTargetCount() != report.getTargetCount())
+			return false;
+		
+		for(int i = 0; i < report.getTargetCount(); i++) {
+			if(!this.getTarget(i).equals(report.getTarget(i)))
+				return false;
+		}
+		
+		return true;
+	}
 }

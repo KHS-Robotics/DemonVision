@@ -54,7 +54,7 @@ public class Main  {
 			ex.printStackTrace();
 		}
 		
-		logger.info("Initalizing DemonVision...");
+		logger.info("Initializing DemonVision...");
 		
 		// Camera
 		Camera camera = new USBCamera(USB_PORT, FIELD_OF_VIEW);

@@ -39,6 +39,7 @@ public abstract class Camera {
 	/**
 	 * Frees resources
 	 */
+	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
 	}

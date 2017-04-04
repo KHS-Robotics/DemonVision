@@ -119,6 +119,7 @@ public class DemonVisionPipeline implements TargetSource {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void releaseOutputs() {
 		resizeImageOutput.release();
 		blurOutput.release();
@@ -131,6 +132,9 @@ public class DemonVisionPipeline implements TargetSource {
 		for(MatOfPoint p : filterContoursOutput) {
 			p.release();
 		}
+		
+		findContoursOutput.clear();
+		filterContoursOutput.clear();
 	}
 
 	/**

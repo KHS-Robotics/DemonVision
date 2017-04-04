@@ -18,9 +18,8 @@ import org.usfirst.frc.team4342.robot.vision.api.target.TargetSource;
  * Class to handle the dirty work for processing a target
  */
 public class DemonVision implements Runnable {
-	private TargetSource source;
-	
 	private Camera cam;
+	private TargetSource source;
 	private Listener[] listeners;
 	
 	/**
@@ -48,7 +47,7 @@ public class DemonVision implements Runnable {
 	/**
 	 * Constructs a new <code>DemonVision</code>
 	 * @param cam the camera being used
-	 * @param parameters the parameters for the pipeline processing images from the camera
+	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
 	 */
 	public DemonVision(Camera cam, PipelineParameters parameters, Listener[] listeners) {
@@ -58,7 +57,7 @@ public class DemonVision implements Runnable {
 	/**
 	 * Constructs a new <code>DemonVision</code>
 	 * @param cam the camera being used
-	 * @param parameters the parameters for the pipeline processing images from the camera
+	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
 	 */
 	public DemonVision(Camera cam, PipelineParameters parameters, Listener listener) {
@@ -67,7 +66,7 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param parameters the parameters for the pipeline processing images from the camera
+	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
 	 */
 	public DemonVision(PipelineParameters parameters, Listener[] listeners) {
@@ -76,7 +75,7 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param parameters the parameters for the pipeline processing images from the camera
+	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
 	 */
 	public DemonVision(PipelineParameters parameters, Listener listener) {
@@ -101,7 +100,7 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Processes an image from the camera
-	 * @throws NullPointerException if the camera is null
+	 * @throws NullPointerException if camera is null
 	 */
 	public void runOnce() {
 		if(cam == null) {
