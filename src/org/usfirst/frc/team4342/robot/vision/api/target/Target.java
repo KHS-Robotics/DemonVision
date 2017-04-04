@@ -80,7 +80,7 @@ public class Target {
 	 */
 	@Override
 	public String toString() {
-		return String.format("{%dx%d, X=%.3f, Y=%.3f}", width, height, getCenterXRatio(), getCenterYRatio());
+		return String.format("{%dx%d, (%.3f, %.3f)}", width, height, getCenterXRatio(), getCenterYRatio());
 	}
 	
 	/**

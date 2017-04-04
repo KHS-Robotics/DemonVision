@@ -40,6 +40,24 @@ public class TargetReport {
 	}
 	
 	/**
+	 * <p>Represents the <code>TargetReport</code> as a <code>String</code></p>
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		String str = "[";
+		
+		for(Target t : targets) {
+			str += t.toString() + ", ";
+		}
+		
+		str = str.substring(0, str.length()-2) + "]";
+		
+		return str;
+	}
+	
+	/**
 	 * <p>Determines if two <code>TargetReport</code> objects are equal</p>
 	 * 
 	 * {@inheritDoc}

@@ -12,8 +12,6 @@ public class TestListener implements Listener {
 	@Override
 	public void processTargets(TargetReport report) {
 		System.out.println("Target Count: " + report.getTargetCount());
-		for(int i = 0; i < report.getTargetCount(); i++) {
-			System.out.println("targets[" + i + "] =" + report.getTarget(i));
-		}
+		System.out.println(report);
 	}
 }
