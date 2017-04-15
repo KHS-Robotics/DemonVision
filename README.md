@@ -1,2 +1,2 @@
 # DemonVision
-Vision code that runs on a Raspberry Pi utilizing OpenCV and NetworkTables
+Vision library for a Raspberry Pi utilizing OpenCV and NetworkTables
