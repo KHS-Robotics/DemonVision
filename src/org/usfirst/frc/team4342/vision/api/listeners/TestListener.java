@@ -1,6 +1,6 @@
-package org.usfirst.frc.team4342.robot.vision.api.listeners;
+package org.usfirst.frc.team4342.vision.api.listeners;
 
-import org.usfirst.frc.team4342.robot.vision.api.target.TargetReport;
+import org.usfirst.frc.team4342.vision.api.target.TargetReport;
 
 /**
  * Test listener to print information about the processed targets

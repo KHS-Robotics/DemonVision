@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4342.robot.vision.api.pipelines;
+package org.usfirst.frc.team4342.vision.api.pipelines;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +13,11 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.Blur;
-import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.PipelineParameters;
-import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.RGBBounds;
-import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.Resolution;
-import org.usfirst.frc.team4342.robot.vision.api.target.TargetSource;
+import org.usfirst.frc.team4342.vision.api.pipelines.parameters.Blur;
+import org.usfirst.frc.team4342.vision.api.pipelines.parameters.PipelineParameters;
+import org.usfirst.frc.team4342.vision.api.pipelines.parameters.RGBBounds;
+import org.usfirst.frc.team4342.vision.api.pipelines.parameters.Resolution;
+import org.usfirst.frc.team4342.vision.api.target.TargetSource;
 
 /**
  * Looks for contours

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4342.robot.vision.api.target;
+package org.usfirst.frc.team4342.vision.api.target;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters.Resolution;
+import org.usfirst.frc.team4342.vision.api.pipelines.parameters.Resolution;
 
 /**
  * Source for unprocessed targets

@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="lib/opencv.jar"/>
 	<classpathentry kind="lib" path="lib/opencv-sources.jar"/>
-	<classpathentry kind="lib" path="lib/NetworkTables-3.1.6-arm-raspbian.jar" sourcepath="lib/NetworkTables-3.1.6-sources.jar"/>
+	<classpathentry kind="lib" path="lib/NetworkTables-3.0.0-20160107.180902-2-desktop.jar" sourcepath="lib/NetworkTables-3.1.6-sources.jar"/>
 	<classpathentry kind="lib" path="lib/NetworkTables-3.1.6-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

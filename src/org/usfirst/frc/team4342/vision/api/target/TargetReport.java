@@ -1,9 +1,11 @@
-package org.usfirst.frc.team4342.robot.vision.api.target;
+package org.usfirst.frc.team4342.vision.api.target;
 
 /**
  * Report for processed targets
  */
-public class TargetReport {
+public class TargetReport implements java.io.Serializable {
+	private static final long serialVersionUID = 1431104252371129970L;
+	
 	private Target[] targets;
 	
 	/**
@@ -11,6 +13,9 @@ public class TargetReport {
 	 * @param targets the processed targets
 	 */
 	public TargetReport(Target[] targets) {
+		if(targets == null)
+			throw new IllegalArgumentException("targets cannot be null");
+		
 		this.targets = targets;
 	}
 	

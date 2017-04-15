@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4342.robot.vision.api.pipelines.parameters;
+package org.usfirst.frc.team4342.vision.api.pipelines.parameters;
 
 /**
  * Class to encapsulate Resolution of images or cameras

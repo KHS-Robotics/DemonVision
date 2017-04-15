@@ -1,7 +1,6 @@
-package org.usfirst.frc.team4342.robot.vision.api.listeners;
+package org.usfirst.frc.team4342.vision.api.listeners;
 
-import org.usfirst.frc.team4342.robot.vision.api.target.Target;
-import org.usfirst.frc.team4342.robot.vision.api.target.TargetReport;
+import org.usfirst.frc.team4342.vision.api.target.TargetReport;
 
 /**
  * Listener interface for a callback that should run
@@ -12,7 +11,7 @@ public interface Listener {
 	/**
 	 * Processes the targets
 	 * @param targets the processed targets
-	 * @see Target
+	 * @see TargetReport
 	 */
 	public void processTargets(TargetReport report);
 }

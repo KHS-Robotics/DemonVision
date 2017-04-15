@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4342.robot.vision.api.target;
+package org.usfirst.frc.team4342.vision.api.target;
 
 import org.opencv.core.Rect;
 

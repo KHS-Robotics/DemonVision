@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4342.robot.vision.api.cameras;
+package org.usfirst.frc.team4342.vision.api.cameras;
 
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;

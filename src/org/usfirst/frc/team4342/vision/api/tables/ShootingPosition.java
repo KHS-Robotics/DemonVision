@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4342.robot.vision.api.tables;
+package org.usfirst.frc.team4342.vision.api.tables;
 
 /**
  * Class to hold information about a position

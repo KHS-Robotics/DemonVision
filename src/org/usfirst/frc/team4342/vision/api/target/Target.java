@@ -1,23 +1,23 @@
-package org.usfirst.frc.team4342.robot.vision.api.target;
+package org.usfirst.frc.team4342.vision.api.target;
 
 /**
  * Class to encapsulate information about a processed target
  */
-public class Target {
+public class Target implements Comparable<Target> {
 	private int width, height;
-	private double centerXRatio, centerYRatio;
+	private double x, y;
 	
 	/**
 	 * Constructs a new <code>Target</code>
 	 * @param width the width of the target
-	 * @param centerXRatio the calculated center x ratio
-	 * @param centerYRatio the calculated center y ratio
+	 * @param x the calculated center x ratio
+	 * @param y the calculated center y ratio
 	 */
-	public Target(int width, int height, double centerXRatio, double centerYRatio) {
+	public Target(int width, int height, double x, double y) {
 		this.width = width;
 		this.height = height;
-		this.centerXRatio = centerXRatio;
-		this.centerYRatio = centerYRatio;
+		this.x = x;
+		this.y = y;
 	}
 	
 	/**
@@ -27,7 +27,7 @@ public class Target {
 	 * @return the center x ratio
 	 */
 	public double getCenterXRatio() {
-		return centerXRatio;
+		return x;
 	}
 	
 	/**
@@ -37,7 +37,7 @@ public class Target {
 	 * @return the center y ratio
 	 */
 	public double getCenterYRatio() {
-		return centerYRatio;
+		return y;
 	}
 	
 	/**
@@ -95,6 +95,16 @@ public class Target {
 		
 		Target target = (Target) obj;
 		
-		return (this.getWidth() == target.getWidth() && this.getHeight() == target.getHeight());
+		return (this.getArea() - target.getArea() < 5);
+	}
+	
+	/**
+	 * Compares the targets' areas
+	 * @return 0 if equal, 1 if calling object is greater,
+	 * -1 if the parameter "target" is greater
+	 */
+	@Override
+	public int compareTo(Target target) {
+		return new TargetComparator().compare(this, target);
 	}
 }
