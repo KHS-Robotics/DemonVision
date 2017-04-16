@@ -51,13 +51,13 @@ public class TargetComparator implements Comparator<Target> {
 	public int compare(Target a, Target b) {
 		switch(type) {
 			case WIDTH:
-				return (Math.abs(a.getWidth() - b.getWidth()) < 5) ? 0 : a.getWidth() - b.getWidth() > 0 ? 1 : -1;
+				return (Math.abs(a.getWidth() - b.getWidth()) < 4) ? 0 : a.getWidth() - b.getWidth() > 0 ? 1 : -1;
 			
 			case HEIGHT:
-				return (Math.abs(a.getHeight() - b.getHeight()) < 3) ? 0 : a.getHeight() - b.getHeight() > 0 ? 1 : -1;
+				return (Math.abs(a.getHeight() - b.getHeight()) < 4) ? 0 : a.getHeight() - b.getHeight() > 0 ? 1 : -1;
 			
 			case AREA:
-				return (Math.abs(a.getArea() - b.getArea()) < 4) ? 0 : a.getArea() - b.getArea() > 0 ? 1 : -1;
+				return (Math.abs(a.getArea() - b.getArea()) < 5) ? 0 : a.getArea() - b.getArea() > 0 ? 1 : -1;
 			
 			case X:
 				return (Math.abs(a.getCenterXRatio() - b.getCenterXRatio()) < 0.01) ? 0 : a.getCenterXRatio() - b.getCenterXRatio() > 0 ? 1 : -1;

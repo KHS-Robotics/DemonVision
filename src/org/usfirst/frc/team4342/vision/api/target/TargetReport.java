@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4342.vision.api.target;
 
+import java.util.Arrays;
+
 /**
  * Report for processed targets
  */
@@ -17,6 +19,7 @@ public class TargetReport implements java.io.Serializable {
 			throw new IllegalArgumentException("targets cannot be null");
 		
 		this.targets = targets;
+		Arrays.sort(this.targets);
 	}
 	
 	/**
@@ -32,6 +35,16 @@ public class TargetReport implements java.io.Serializable {
 	 * @return the found targets
 	 */
 	public Target[] getTargets() {
+		return targets;
+	}
+	
+	/**
+	 * 
+	 * @param sortType
+	 * @return
+	 */
+	public Target[] getTargets(TargetComparator.Type sortType) {
+		Arrays.sort(targets, new TargetComparator(sortType));
 		return targets;
 	}
 	

@@ -80,7 +80,7 @@ public class Target implements Comparable<Target> {
 	 */
 	@Override
 	public String toString() {
-		return String.format("{%dx%d, (%.3f, %.3f)}", width, height, getCenterXRatio(), getCenterYRatio());
+		return String.format("{%dx%d, (%.3f, %.3f)}", getWidth(), getHeight(), getCenterXRatio(), getCenterYRatio());
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class Target implements Comparable<Target> {
 		
 		Target target = (Target) obj;
 		
-		return (this.getArea() - target.getArea() < 5);
+		return (Math.abs(this.getWidth() - target.getWidth()) < 4) && (Math.abs(this.getHeight() - target.getHeight()) < 4);
 	}
 	
 	/**
