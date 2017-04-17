@@ -8,6 +8,8 @@ import java.util.Arrays;
 public class TargetReport implements java.io.Serializable {
 	private static final long serialVersionUID = 1431104252371129970L;
 	
+	private TargetComparator.Type lastSortType = TargetComparator.Type.AREA;
+	
 	private Target[] targets;
 	
 	/**
@@ -39,12 +41,18 @@ public class TargetReport implements java.io.Serializable {
 	}
 	
 	/**
-	 * 
-	 * @param sortType
-	 * @return
+	 * Gets the found targets in an order specified
+	 * by the sort type
+	 * @param sortType the type of sort
+	 * @return the found targets in an order specified
+	 * by the sort type
+	 * @see TargetComparator.Type
 	 */
 	public Target[] getTargets(TargetComparator.Type sortType) {
-		Arrays.sort(targets, new TargetComparator(sortType));
+		if(sortType != lastSortType)
+			Arrays.sort(targets, new TargetComparator(sortType));
+		lastSortType = sortType;
+		
 		return targets;
 	}
 	

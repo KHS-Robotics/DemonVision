@@ -1,67 +1,44 @@
 package org.usfirst.frc.team4342.vision.api.target;
 
 /**
- * Class to encapsulate information about a processed target
+ * <p>Class to encapsulate information about a processed target</p>
+ * 
+ * This is how we break down the position of a target in the image.
+ * The origin is the top left of the image (0.0,0.0), and the
+ * bottom left is (1.0,1.0).
+ * 
+ * 		(0.0, 0.0)			(0.5, 0.0)			(1.0, 0.0)
+ * 			-----------------------------------------
+ * 			|										|
+ * 			|										|
+ * 			|										|
+ * 			|										|
+ * (0, 0.5)	|				IMAGE					| (1.0, 0.5)
+ * 			|										|
+ * 			|										|
+ * 			|										|
+ * 			|										|
+ * 			-----------------------------------------
+ * 		(0.0, 1.0)			(0.5, 1.0)			(1.0, 1.0)
  */
 public class Target implements Comparable<Target> {
-	private int width, height;
-	private double x, y;
+	public final int width, height, area;
+	public final double x, y;
 	
 	/**
-	 * Constructs a new <code>Target</code>
-	 * @param width the width of the target
-	 * @param x the calculated center x ratio
-	 * @param y the calculated center y ratio
+	 * Constructs a new <code>Target</code>. See the top of the
+	 * class for a breakdown of what x and y actually is
+	 * @param width the width of the target in pixels
+	 * @param height the height of the target in pixels
+	 * @param x the calculated x coordinate
+	 * @param y the calculated y coordinate 
 	 */
 	public Target(int width, int height, double x, double y) {
 		this.width = width;
 		this.height = height;
 		this.x = x;
 		this.y = y;
-	}
-	
-	/**
-	 * Gets the ratio of the target's X position (left/right) relative to
-	 * the entire image. In other words, how far to the right is the
-	 * center of the target relative to the left of the image?
-	 * @return the center x ratio
-	 */
-	public double getCenterXRatio() {
-		return x;
-	}
-	
-	/**
-	 * Gets the ratio of the target's Y position (up/down) relative to
-	 * the entire image. In other words, how down is the
-	 * center of the target relative to the top of the image?
-	 * @return the center y ratio
-	 */
-	public double getCenterYRatio() {
-		return y;
-	}
-	
-	/**
-	 * Gets the width of the target
-	 * @return the width of the target
-	 */
-	public int getWidth() {
-		return width;
-	}
-	
-	/**
-	 * Gets the height of the target
-	 * @return the height of the target
-	 */
-	public int getHeight() {
-		return height;
-	}
-	
-	/**
-	 * Gets the area of the target
-	 * @return the area of the target
-	 */
-	public int getArea() {
-		return getWidth()*getHeight();
+		this.area = width*height;
 	}
 	
 	/**
@@ -70,7 +47,7 @@ public class Target implements Comparable<Target> {
 	 * @return how far to the right or left the target is in degrees
 	 */
 	public double getYawOffset(double fieldOfView) {
-		return fieldOfView*(0.5 - getCenterXRatio());
+		return fieldOfView*(0.5 - x);
 	}
 	
 	/**
@@ -80,7 +57,7 @@ public class Target implements Comparable<Target> {
 	 */
 	@Override
 	public String toString() {
-		return String.format("{%dx%d, (%.3f, %.3f)}", getWidth(), getHeight(), getCenterXRatio(), getCenterYRatio());
+		return String.format("{%dx%d, (%.3f, %.3f)}", width, height, x, y);
 	}
 	
 	/**
@@ -95,7 +72,7 @@ public class Target implements Comparable<Target> {
 		
 		Target target = (Target) obj;
 		
-		return (Math.abs(this.getWidth() - target.getWidth()) < 4) && (Math.abs(this.getHeight() - target.getHeight()) < 4);
+		return (Math.abs(width - target.width) < 4) && (Math.abs(this.height - target.height) < 4);
 	}
 	
 	/**
@@ -105,6 +82,6 @@ public class Target implements Comparable<Target> {
 	 */
 	@Override
 	public int compareTo(Target target) {
-		return new TargetComparator().compare(this, target);
+		return TargetComparator.compare(TargetComparator.Type.AREA, this, target);
 	}
 }

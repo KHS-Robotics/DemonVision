@@ -42,6 +42,19 @@ public class TargetComparator implements Comparator<Target> {
 	}
 	
 	/**
+	 * Compares targets a and b with respect to the type
+	 * of comparison
+	 * @param type the type of comparison
+	 * @param a the first target
+	 * @param b the second target
+	 * @return 0 if a == b, 1 if a > b, -1 if a < b
+	 * @see Type
+	 */
+	public static int compare(Type type, Target a, Target b) {
+		return new TargetComparator(type).compare(a, b);
+	}
+	
+	/**
 	 * Compares targets a and b
 	 * @param a the first target
 	 * @param b the second target
@@ -49,24 +62,44 @@ public class TargetComparator implements Comparator<Target> {
 	 */
 	@Override
 	public int compare(Target a, Target b) {
+		double difference = 0.0;
+		double tolerance = 0.0;
+		
 		switch(type) {
+		
 			case WIDTH:
-				return (Math.abs(a.getWidth() - b.getWidth()) < 4) ? 0 : a.getWidth() - b.getWidth() > 0 ? 1 : -1;
+				difference = a.width - b.width;
+				tolerance = 3.0;
+				
+			break;
 			
 			case HEIGHT:
-				return (Math.abs(a.getHeight() - b.getHeight()) < 4) ? 0 : a.getHeight() - b.getHeight() > 0 ? 1 : -1;
+				difference = a.height - b.height;
+				tolerance = 3.0;
+			break;
 			
 			case AREA:
-				return (Math.abs(a.getArea() - b.getArea()) < 5) ? 0 : a.getArea() - b.getArea() > 0 ? 1 : -1;
+				difference = a.area - b.area;
+				tolerance = 5.0;
+			break;
 			
 			case X:
-				return (Math.abs(a.getCenterXRatio() - b.getCenterXRatio()) < 0.01) ? 0 : a.getCenterXRatio() - b.getCenterXRatio() > 0 ? 1 : -1;
+				difference = a.x - b.x;
+				tolerance = 0.01;
+			break;
 			
 			case Y:
-				return (Math.abs(a.getCenterYRatio() - b.getCenterYRatio()) < 0.01) ? 0 : a.getCenterYRatio() - b.getCenterYRatio() > 0 ? 1 : -1;
+				difference = a.y - b.y;
+				tolerance = 0.01;
+			break;
 			
 			default:
-				return -2; // should never reach here
+				throw new IllegalArgumentException("how is type null????"); // should never reach here
 		}
+		
+		if(Math.abs(difference) < tolerance)
+			return 0;
+		
+		return difference > 0 ? 1 : -1;
 	}
 }

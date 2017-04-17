@@ -3,7 +3,6 @@ package org.usfirst.frc.team4342.vision;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.usfirst.frc.team4342.vision.api.cameras.Camera;
@@ -22,21 +21,23 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
  */
 public class DemonVision implements Runnable {
 	private static Logger log = Logger.getLogger(DemonVision.class.getName());
-	private static int teamNumber = 4342;
 	
 	private Camera cam;
 	private TargetSource source;
 	private Listener[] listeners;
 	
 	/**
-	 * Initializes Demon Vision. This should be called in the constructor
+	 * Constructs a new <code>DemonVision</code>
+	 * @param cam the camera being used
+	 * @param source the source to get raw targets from
+	 * @param listeners the listeners to utilize processed targets
 	 */
-	private static void init() {
-		// Load OpenCV 3.1
+	public DemonVision(int teamNumber, Camera cam, TargetSource source, Listener[] listeners) {
 		try {
-			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		} catch(Exception ex) {
-			log.log(Level.SEVERE, "Failed to load " + Core.NATIVE_LIBRARY_NAME, ex);
+			log.addHandler(new java.util.logging.FileHandler("demon_vision.log"));
+		} catch (Exception ex) {
+			System.err.println("Failed to add file handler for DemonVision logger!");
+			ex.printStackTrace();
 		}
 		
 		// Configure NetworkTables
@@ -47,31 +48,6 @@ public class DemonVision implements Runnable {
 		} catch(Exception ex) {
 			log.log(Level.SEVERE, "Failed to initialize network tables", ex);
 		}
-	}
-	
-	/**
-	 * Sets the team number for Network Tables
-	 * @param number your team number
-	 */
-	public static void setTeamNumber(final int number) {
-		teamNumber = number;
-	}
-	
-	/**
-	 * Constructs a new <code>DemonVision</code>
-	 * @param cam the camera being used
-	 * @param source the source to get raw targets from
-	 * @param listeners the listeners to utilize processed targets
-	 */
-	public DemonVision(Camera cam, TargetSource source, Listener[] listeners) {
-		try {
-			log.addHandler(new java.util.logging.FileHandler("demon_vision.log"));
-		} catch (Exception ex) {
-			System.err.println("Failed to add file handler for DemonVision logger!");
-			ex.printStackTrace();
-		}
-		
-		DemonVision.init();
 		
 		this.cam = cam;
 		this.source = source;
@@ -80,50 +56,55 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
+	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param source the source to get raw targets from
 	 * @param listener the listener to utilize processed targets
 	 */
-	public DemonVision(Camera cam, TargetSource source, Listener listener) {
-		this(cam, source, new Listener[] { listener });
+	public DemonVision(int teamNumber, Camera cam, TargetSource source, Listener listener) {
+		this(teamNumber, cam, source, new Listener[] { listener });
 	}
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
+	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
 	 */
-	public DemonVision(Camera cam, PipelineParameters parameters, Listener[] listeners) {
-		this(cam, new DemonVisionPipeline(parameters), listeners);
+	public DemonVision(int teamNumber, Camera cam, PipelineParameters parameters, Listener[] listeners) {
+		this(teamNumber, cam, new DemonVisionPipeline(parameters), listeners);
 	}
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
+	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
 	 */
-	public DemonVision(Camera cam, PipelineParameters parameters, Listener listener) {
-		this(cam, new DemonVisionPipeline(parameters), listener);
+	public DemonVision(int teamNumber, Camera cam, PipelineParameters parameters, Listener listener) {
+		this(teamNumber, cam, new DemonVisionPipeline(parameters), listener);
 	}
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
+	 * @param teamNumber your team number
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
 	 */
-	public DemonVision(PipelineParameters parameters, Listener[] listeners) {
-		this(null, parameters, listeners);
+	public DemonVision(int teamNumber, PipelineParameters parameters, Listener[] listeners) {
+		this(teamNumber, null, parameters, listeners);
 	}
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
+	 * @param teamNumber your team number
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
 	 */
-	public DemonVision(PipelineParameters parameters, Listener listener) {
-		this(null, parameters, listener);
+	public DemonVision(int teamNumber, PipelineParameters parameters, Listener listener) {
+		this(teamNumber, null, parameters, listener);
 	}
 	
 	/**
