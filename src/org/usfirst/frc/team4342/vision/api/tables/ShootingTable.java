@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4342.vision.api.tables;
 
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 /**
@@ -54,8 +55,12 @@ public class ShootingTable {
 	 * Finds a value in the table closest to the specified key
 	 * @param key the key
 	 * @return a value in the table closest to the specified key
+	 * @throws NoSuchElementException if there is one or less keys in the map
 	 */
 	public double getNear(double key) {
+		if(map.size() <= 1)
+			throw new NoSuchElementException("Nothing near the key!");
+		
 		Double lowKey = map.lowerKey(key);
 		Double highKey = map.ceilingKey(key);
 		
@@ -72,9 +77,20 @@ public class ShootingTable {
 	}
 	
 	/**
+	 * Gets if a key is in the table
+	 * @param key the key
+	 * @return true if the key is in the table, false otherwise
+	 */
+	public boolean containsKey(double key) {
+		return map.containsKey(key);
+	}
+	
+	/**
 	 * Comparator for the shooting table's keys
 	 */
 	public class KeyComparator implements Comparator<Double> {
+		public static final double DEFAULT_TOLERANCE = 0.01;
+		
 		private final double tolerance;
 		
 		/**
@@ -90,7 +106,7 @@ public class ShootingTable {
 		 * of 0.01
 		 */
 		public KeyComparator() {
-			this(0.01);
+			this(DEFAULT_TOLERANCE);
 		}
 		
 		/**

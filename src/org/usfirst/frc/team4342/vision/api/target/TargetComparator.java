@@ -7,6 +7,7 @@ import java.util.Comparator;
  */
 public class TargetComparator implements Comparator<Target> {
 	private Type type;
+	private boolean ascending;
 	
 	/**
 	 * The type of comparison
@@ -23,10 +24,11 @@ public class TargetComparator implements Comparator<Target> {
 	 * Creates a new <code>TargetComparison</code> with a specified
 	 * compare type
 	 * @param type the type of comparison
+	 * @param ascending true to invert compare, false otherwise
 	 * @throws IllegalArgumentException if type is null
 	 * @see Type
 	 */
-	public TargetComparator(Type type) {
+	public TargetComparator(Type type, boolean ascending) {
 		if(type == null)
 			throw new IllegalArgumentException("type cannot be null");
 		
@@ -35,10 +37,26 @@ public class TargetComparator implements Comparator<Target> {
 	
 	/**
 	 * Creates a new <code>TargetComparison</code> with an area comparison
+	 * @param ascending true to invert compare, false otherwise
+	 */
+	public TargetComparator(boolean ascending) {
+		this(Type.AREA, ascending);
+	}
+	
+	/**
+	 * Creates a new <code>TargetComparison</code>
+	 * @param type the type of comparison
+	 */
+	public TargetComparator(Type type) {
+		this(type, true);
+	}
+	
+	/**
+	 * Creates a new <code>TargetComparison</code> with an area comparison
 	 * @see Type
 	 */
 	public TargetComparator() {
-		this(Type.AREA);
+		this(Type.AREA, true);
 	}
 	
 	/**
@@ -51,7 +69,7 @@ public class TargetComparator implements Comparator<Target> {
 	 * @see Type
 	 */
 	public static int compare(Type type, Target a, Target b) {
-		return new TargetComparator(type).compare(a, b);
+		return new TargetComparator(type, true).compare(a, b);
 	}
 	
 	/**
@@ -100,6 +118,9 @@ public class TargetComparator implements Comparator<Target> {
 		if(Math.abs(difference) < tolerance)
 			return 0;
 		
-		return difference > 0 ? 1 : -1;
+		if(ascending)
+			return difference > 0 ? 1 : -1;
+		
+		return difference > 0 ? -1 : 1;
 	}
 }

@@ -1,5 +1,10 @@
 package org.usfirst.frc.team4342.vision.api.tables;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.usfirst.frc.team4342.vision.DemonVision;
+
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
@@ -8,17 +13,28 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public final class SmartDashboard {
 	private SmartDashboard() {}
 	
+	private static boolean initialized;
 	private static NetworkTable table;
 	
 	/**
-	 * Gets the SmartDashboard Network Table
-	 * @return the SmartDashboard Network Table
+	 * Initializes Network Tables
+	 * @param teamNumber your team number
 	 */
-	public static NetworkTable getSmartDashboard() {
-		if(table == null)
-			table = NetworkTable.getTable("SmartDashboard");
+	public static void initialize(int teamNumber) {
+		if(initialized)
+			return;
+		initialized = true;
 		
-		return table;
+		// Configure NetworkTables
+		try {
+			NetworkTable.setClientMode();
+			NetworkTable.setNetworkIdentity("coprocessor-" + teamNumber + "-frc");
+			NetworkTable.setIPAddress("roborio-" + teamNumber + "-frc.local");
+		} catch(Exception ex) {
+			Logger.getLogger(DemonVision.class.getName()).log(Level.SEVERE, "Failed to initialize network tables", ex);
+		}
+		
+		table = NetworkTable.getTable("SmartDashboard");
 	}
 	
 	/**
@@ -27,7 +43,8 @@ public final class SmartDashboard {
 	 * @param value the value
 	 */
 	public static void putNumber(String key, double value) {
-		getSmartDashboard().putNumber(key, value);
+		verifyInitializedAndThrow();
+		table.putNumber(key, value);
 	}
 	
 	/**
@@ -36,7 +53,8 @@ public final class SmartDashboard {
 	 * @param value the value
 	 */
 	public static void putBoolean(String key, boolean value) {
-		getSmartDashboard().putBoolean(key, value);
+		verifyInitializedAndThrow();
+		table.putBoolean(key, value);
 	}
 	
 	/**
@@ -46,7 +64,8 @@ public final class SmartDashboard {
 	 * @return the value of the key if in the table, defaultValue otherwise
 	 */
 	public static double getNumber(String key, double defaultValue) {
-		return getSmartDashboard().getNumber(key, defaultValue);
+		verifyInitializedAndThrow();
+		return table.getNumber(key, defaultValue);
 	}
 	
 	/**
@@ -56,6 +75,21 @@ public final class SmartDashboard {
 	 * @return the value of the key if in the table, defaultValue otherwise
 	 */
 	public static boolean getBoolean(String key, boolean defaultValue) {
-		return getSmartDashboard().getBoolean(key, defaultValue);
+		verifyInitializedAndThrow();
+		return table.getBoolean(key, defaultValue);
+	}
+	
+	/**
+	 * Verifies that Network Tables were initialized
+	 * @throws NullPointerException if {@link SmartDashboard#initialize(int)} wasn't called
+	 * or if <code>table</code> is null
+	 * @see SmartDashboard#init
+	 */
+	private static void verifyInitializedAndThrow() {
+		if(!initialized)
+			throw new NullPointerException("Network Tables were never initialized! Call SmartDashboard.initialize(int)!");
+		
+		if(table == null)
+			throw new NullPointerException("SmartDashboard was never instantiated!"); 
 	}
 }

@@ -21,7 +21,7 @@ public class TargetReport implements java.io.Serializable {
 			throw new IllegalArgumentException("targets cannot be null");
 		
 		this.targets = targets;
-		Arrays.sort(this.targets);
+		Arrays.sort(targets, new TargetComparator(lastSortType, false));
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class TargetReport implements java.io.Serializable {
 	 */
 	public Target[] getTargets(TargetComparator.Type sortType) {
 		if(sortType != lastSortType)
-			Arrays.sort(targets, new TargetComparator(sortType));
+			Arrays.sort(targets, new TargetComparator(sortType, false));
 		lastSortType = sortType;
 		
 		return targets;

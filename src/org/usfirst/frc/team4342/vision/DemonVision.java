@@ -14,8 +14,6 @@ import org.usfirst.frc.team4342.vision.api.target.TargetProcessor;
 import org.usfirst.frc.team4342.vision.api.target.TargetReport;
 import org.usfirst.frc.team4342.vision.api.target.TargetSource;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-
 /**
  * Class to handle the dirty work for processing a target
  */
@@ -28,6 +26,7 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
+	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param source the source to get raw targets from
 	 * @param listeners the listeners to utilize processed targets
@@ -40,14 +39,7 @@ public class DemonVision implements Runnable {
 			ex.printStackTrace();
 		}
 		
-		// Configure NetworkTables
-		try {
-			NetworkTable.setClientMode();
-			NetworkTable.setNetworkIdentity("coprocessor-" + teamNumber + "-frc");
-			NetworkTable.setIPAddress("roborio-" + teamNumber + "-frc.local");
-		} catch(Exception ex) {
-			log.log(Level.SEVERE, "Failed to initialize network tables", ex);
-		}
+		SmartDashboard.initialize(teamNumber);
 		
 		this.cam = cam;
 		this.source = source;
