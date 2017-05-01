@@ -9,7 +9,6 @@ import org.usfirst.frc.team4342.vision.api.cameras.Camera;
 import org.usfirst.frc.team4342.vision.api.listeners.Listener;
 import org.usfirst.frc.team4342.vision.api.pipelines.DemonVisionPipeline;
 import org.usfirst.frc.team4342.vision.api.pipelines.parameters.PipelineParameters;
-import org.usfirst.frc.team4342.vision.api.tables.SmartDashboard;
 import org.usfirst.frc.team4342.vision.api.target.TargetProcessor;
 import org.usfirst.frc.team4342.vision.api.target.TargetReport;
 import org.usfirst.frc.team4342.vision.api.target.TargetSource;
@@ -31,15 +30,13 @@ public class DemonVision implements Runnable {
 	 * @param source the source to get raw targets from
 	 * @param listeners the listeners to utilize processed targets
 	 */
-	public DemonVision(int teamNumber, Camera cam, TargetSource source, Listener[] listeners) {
+	public DemonVision(Camera cam, TargetSource source, Listener[] listeners) {
 		try {
 			log.addHandler(new java.util.logging.FileHandler("demon_vision.log"));
 		} catch (Exception ex) {
 			System.err.println("Failed to add file handler for DemonVision logger!");
 			ex.printStackTrace();
 		}
-		
-		SmartDashboard.initialize(teamNumber);
 		
 		this.cam = cam;
 		this.source = source;
@@ -53,8 +50,8 @@ public class DemonVision implements Runnable {
 	 * @param source the source to get raw targets from
 	 * @param listener the listener to utilize processed targets
 	 */
-	public DemonVision(int teamNumber, Camera cam, TargetSource source, Listener listener) {
-		this(teamNumber, cam, source, new Listener[] { listener });
+	public DemonVision(Camera cam, TargetSource source, Listener listener) {
+		this(cam, source, new Listener[] { listener });
 	}
 	
 	/**
@@ -64,8 +61,8 @@ public class DemonVision implements Runnable {
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
 	 */
-	public DemonVision(int teamNumber, Camera cam, PipelineParameters parameters, Listener[] listeners) {
-		this(teamNumber, cam, new DemonVisionPipeline(parameters), listeners);
+	public DemonVision(Camera cam, PipelineParameters parameters, Listener[] listeners) {
+		this(cam, new DemonVisionPipeline(parameters), listeners);
 	}
 	
 	/**
@@ -75,8 +72,8 @@ public class DemonVision implements Runnable {
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
 	 */
-	public DemonVision(int teamNumber, Camera cam, PipelineParameters parameters, Listener listener) {
-		this(teamNumber, cam, new DemonVisionPipeline(parameters), listener);
+	public DemonVision(Camera cam, PipelineParameters parameters, Listener listener) {
+		this(cam, new DemonVisionPipeline(parameters), listener);
 	}
 	
 	/**
@@ -85,8 +82,8 @@ public class DemonVision implements Runnable {
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
 	 */
-	public DemonVision(int teamNumber, PipelineParameters parameters, Listener[] listeners) {
-		this(teamNumber, null, parameters, listeners);
+	public DemonVision(PipelineParameters parameters, Listener[] listeners) {
+		this(null, parameters, listeners);
 	}
 	
 	/**
@@ -95,8 +92,8 @@ public class DemonVision implements Runnable {
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
 	 */
-	public DemonVision(int teamNumber, PipelineParameters parameters, Listener listener) {
-		this(teamNumber, null, parameters, listener);
+	public DemonVision(PipelineParameters parameters, Listener listener) {
+		this(null, parameters, listener);
 	}
 	
 	/**
@@ -162,8 +159,6 @@ public class DemonVision implements Runnable {
 	 * Indefinitely processes images from the camera
 	 */
 	public void runForever() {
-		SmartDashboard.putBoolean("DemonVision", true);
-		
 		while(true) {
 			try {
 				runOnce();
@@ -171,8 +166,6 @@ public class DemonVision implements Runnable {
 				break;
 			}
 		}
-		
-		SmartDashboard.putBoolean("DemonVision", false);
 	}
 	
 	/**
