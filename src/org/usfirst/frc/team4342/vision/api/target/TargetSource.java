@@ -39,10 +39,11 @@ public interface TargetSource {
 	 * Utilizes the processed contours and wraps them
 	 * into bounding rectangles
 	 * @return the unprocessed targets as bounding rectangles
+	 * @see TargetSource#getContoursReport()
 	 * @see Rect
 	 */
 	default Rect[] getRawTargets() {
-		List<MatOfPoint> contours = getContoursReport();
+		List<MatOfPoint> contours = this.getContoursReport();
 		Rect[] rawTargets = new Rect[contours.size()];
 		
 		for(int i = 0; i < rawTargets.length; i++) {
@@ -50,5 +51,29 @@ public interface TargetSource {
 		}
 		
 		return rawTargets;
+	}
+	
+	/**
+	 * Processes raw targets
+	 * @return processed targets
+	 * @see TargetSource#process(Mat)
+	 * @see TargetSource#getRawTargets()
+	 * @see TargetReport
+	 */
+	default TargetReport getTargetReport() {
+		Rect[] rawTargets = this.getRawTargets();
+		Target[] targets = new Target[rawTargets.length];
+		
+		for(int i = 0; i < rawTargets.length; i++) {
+			Rect rawTarget = rawTargets[i];
+			
+			// Calculate the X and Y coordinates of the center of the target
+			double x = (double) (rawTarget.x + ((double) rawTarget.width / 2.0)) / ((double) this.getResolution().getX());
+			double y = (double) (rawTarget.y + ((double) rawTarget.height / 2.0)) / ((double) this.getResolution().getY());
+			
+			targets[i] = new Target(rawTarget.width, rawTarget.height, x, y);
+		}
+
+		return new TargetReport(targets);
 	}
 }

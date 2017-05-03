@@ -20,9 +20,14 @@ public abstract class Camera {
 	 * Gets the field of view of the camera in degrees
 	 * @return the field of view of the camera in degrees
 	 */
-	public double getFOV() {
+	public double getFoV() {
 		return fov;
 	}
+	
+	/**
+	 * Closes the connection
+	 */
+	public abstract void close();
 	
 	/**
 	 * Gets if the camera is connected
@@ -41,6 +46,6 @@ public abstract class Camera {
 	 */
 	@Override
 	protected void finalize() throws Throwable {
-		super.finalize();
+		close();
 	}
 }

@@ -9,7 +9,6 @@ import org.usfirst.frc.team4342.vision.api.cameras.Camera;
 import org.usfirst.frc.team4342.vision.api.listeners.Listener;
 import org.usfirst.frc.team4342.vision.api.pipelines.DemonVisionPipeline;
 import org.usfirst.frc.team4342.vision.api.pipelines.parameters.PipelineParameters;
-import org.usfirst.frc.team4342.vision.api.target.TargetProcessor;
 import org.usfirst.frc.team4342.vision.api.target.TargetReport;
 import org.usfirst.frc.team4342.vision.api.target.TargetSource;
 
@@ -17,7 +16,7 @@ import org.usfirst.frc.team4342.vision.api.target.TargetSource;
  * Class to handle the dirty work for processing a target
  */
 public class DemonVision implements Runnable {
-	private static Logger log = Logger.getLogger(DemonVision.class.getName());
+	private static Logger log;
 	
 	private Camera cam;
 	private TargetSource source;
@@ -25,13 +24,13 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param source the source to get raw targets from
 	 * @param listeners the listeners to utilize processed targets
 	 */
 	public DemonVision(Camera cam, TargetSource source, Listener[] listeners) {
 		try {
+			log = Logger.getLogger(DemonVision.class.getName());
 			log.addHandler(new java.util.logging.FileHandler("demon_vision.log"));
 		} catch (Exception ex) {
 			System.err.println("Failed to add file handler for DemonVision logger!");
@@ -45,7 +44,6 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param source the source to get raw targets from
 	 * @param listener the listener to utilize processed targets
@@ -56,7 +54,6 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
@@ -67,7 +64,6 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param teamNumber your team number
 	 * @param cam the camera being used
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
@@ -78,7 +74,6 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param teamNumber your team number
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listeners the listeners to utilize processed targets
 	 */
@@ -88,7 +83,6 @@ public class DemonVision implements Runnable {
 	
 	/**
 	 * Constructs a new <code>DemonVision</code>
-	 * @param teamNumber your team number
 	 * @param parameters the parameters for the pipeline processing images
 	 * @param listener the listener to utilize processed targets
 	 */
@@ -122,7 +116,7 @@ public class DemonVision implements Runnable {
 			log.log(Level.SEVERE, ex.getMessage(), ex);
 			throw ex;
 		}
-			
+		
 		runOnce(cam.getFrame());
 	}
 	
@@ -142,7 +136,7 @@ public class DemonVision implements Runnable {
 		try {
 			source.process(img);
 			
-			TargetReport report = TargetProcessor.process(source);
+			TargetReport report = source.getTargetReport();
 			for(Listener listener : listeners) {
 				listener.processTargets(report);
 			}
@@ -171,11 +165,11 @@ public class DemonVision implements Runnable {
 	/**
 	 * Processes images from the camera a fixed number of times
 	 * @param times the number of times
-	 * @throws IllegalArgumentException if times is less than zero
+	 * @throws IllegalArgumentException if times is negative
 	 */
 	public void run(final int times) {
 		if(times < 0)
-			throw new IllegalArgumentException("times must be be greater positive");
+			throw new IllegalArgumentException("times cannot be negative");
 			
 		int current = 0;
 		while(current < times) {

@@ -18,7 +18,7 @@ public class ShootingTable {
 	 */
 	public ShootingTable(double tolerance, ShootingPosition[] positions) {
 		keyCompare = new KeyComparator(tolerance);
-		map = new TreeMap<>(keyCompare);
+		map = new TreeMap<Double, Double>(keyCompare);
 		
 		for(ShootingPosition position : positions) {
 			map.put(position.getKey(), position.getValue());
@@ -30,7 +30,7 @@ public class ShootingTable {
 	 * @param positions the positions for the shooting table
 	 */
 	public ShootingTable(ShootingPosition[] positions) {
-		this(0.01, positions);
+		this(KeyComparator.DEFAULT_TOLERANCE, positions);
 	}
 	
 	/**
@@ -89,6 +89,7 @@ public class ShootingTable {
 	 * Comparator for the shooting table's keys
 	 */
 	public class KeyComparator implements Comparator<Double> {
+		/** Default tolerance for keys */
 		public static final double DEFAULT_TOLERANCE = 0.01;
 		
 		private final double tolerance;

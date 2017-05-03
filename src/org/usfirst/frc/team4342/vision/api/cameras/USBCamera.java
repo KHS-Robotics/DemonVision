@@ -28,6 +28,13 @@ public class USBCamera extends Camera {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void close() {
+		vc.release();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isConnected() {
 		return vc.isOpened();
@@ -52,11 +59,10 @@ public class USBCamera extends Camera {
 	}
 	
 	/**
-	 * Frees resources
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
-		vc.release();
 	}
 }
