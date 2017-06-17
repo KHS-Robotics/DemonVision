@@ -2,7 +2,7 @@ package org.usfirst.frc.team4342.vision.api.pipelines.parameters;
 
 /**
  * Class to encapsulate all of the parameters for the DemonVision pipeline
- * @see org.usfirst.frc.team4342.vision.api.pipelines.DemonVisionPipeline
+ * @see org.usfirst.frc.team4342.vision.api.pipelines.DefaultPipeline
  */
 public class PipelineParameters {
 	private Resolution res;

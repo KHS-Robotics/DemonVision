@@ -7,7 +7,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.usfirst.frc.team4342.vision.api.cameras.Camera;
 import org.usfirst.frc.team4342.vision.api.listeners.Listener;
-import org.usfirst.frc.team4342.vision.api.pipelines.DemonVisionPipeline;
+import org.usfirst.frc.team4342.vision.api.pipelines.DefaultPipeline;
 import org.usfirst.frc.team4342.vision.api.pipelines.parameters.PipelineParameters;
 import org.usfirst.frc.team4342.vision.api.target.TargetReport;
 import org.usfirst.frc.team4342.vision.api.target.TargetSource;
@@ -59,7 +59,7 @@ public class DemonVision implements Runnable {
 	 * @param listeners the listeners to utilize processed targets
 	 */
 	public DemonVision(Camera cam, PipelineParameters parameters, Listener[] listeners) {
-		this(cam, new DemonVisionPipeline(parameters), listeners);
+		this(cam, new DefaultPipeline(parameters), listeners);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class DemonVision implements Runnable {
 	 * @param listener the listener to utilize processed targets
 	 */
 	public DemonVision(Camera cam, PipelineParameters parameters, Listener listener) {
-		this(cam, new DemonVisionPipeline(parameters), listener);
+		this(cam, new DefaultPipeline(parameters), listener);
 	}
 	
 	/**

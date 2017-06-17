@@ -20,9 +20,17 @@ import org.usfirst.frc.team4342.vision.api.pipelines.parameters.Resolution;
 import org.usfirst.frc.team4342.vision.api.target.TargetSource;
 
 /**
- * Looks for contours
+ * <p>Default Pipeline to find contours.</p>
+ * The steps of the process include:
+ * <ol>
+ * 	<li>Resize</li>
+ * 	<li>Blur</li>
+ * 	<li>RGB Threshold</li>
+ * 	<li>Find Contours</li>
+ * 	<li>Filter Contours</li>
+ * <ol>
  */
-public class DemonVisionPipeline implements TargetSource {
+public class DefaultPipeline implements TargetSource {
 	private Resolution res;
 	private Blur blur;
 	private RGBBounds rgb;
@@ -33,7 +41,7 @@ public class DemonVisionPipeline implements TargetSource {
 	 * @param blur the type and amount to blur
 	 * @param rgb the bounds for the RGB threshold
 	 */
-	public DemonVisionPipeline(Resolution resolution, Blur blur, RGBBounds rgb) {
+	public DefaultPipeline(Resolution resolution, Blur blur, RGBBounds rgb) {
 		this.res = resolution;
 		this.blur = blur;
 		this.rgb = rgb;
@@ -43,7 +51,7 @@ public class DemonVisionPipeline implements TargetSource {
 	 * Constructs a new <code>DemonVisionPipeline</code>
 	 * @param parameters the pipeline parameters
 	 */
-	public DemonVisionPipeline(PipelineParameters parameters) {
+	public DefaultPipeline(PipelineParameters parameters) {
 		this(parameters.getResolution(), parameters.getBlur(), parameters.getRGB());
 	}
 	
@@ -307,7 +315,7 @@ public class DemonVisionPipeline implements TargetSource {
 	}
 	
 	/**
-	 * Frees resources
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void finalize() throws Throwable {

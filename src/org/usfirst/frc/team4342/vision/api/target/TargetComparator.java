@@ -48,7 +48,7 @@ public class TargetComparator implements Comparator<Target> {
 	 * @param type the type of comparison
 	 */
 	public TargetComparator(Type type) {
-		this(type, true);
+		this(type, false);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class TargetComparator implements Comparator<Target> {
 	 * @see Type
 	 */
 	public TargetComparator() {
-		this(Type.AREA, true);
+		this(Type.AREA, false);
 	}
 	
 	/**
