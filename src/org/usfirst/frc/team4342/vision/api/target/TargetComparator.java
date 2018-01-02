@@ -33,6 +33,7 @@ public class TargetComparator implements Comparator<Target> {
 			throw new IllegalArgumentException("type cannot be null");
 		
 		this.type = type;
+		this.ascending = ascending;
 	}
 	
 	/**
